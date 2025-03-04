@@ -1,0 +1,10 @@
+{
+  "extends": "@tiagojacinto/typescript-config/typecheck-config.json",
+  "compilerOptions": {
+    "checkJs": true,
+    "moduleResolution": "bundler",
+  },
+  "include": [
+    "*.config.*js",
+  ]
+}
