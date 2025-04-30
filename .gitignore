@@ -1,3 +1,16 @@
+# dotenv
+*.env
+*.env.*
+!*.env.example*
+
+# npm
+node_modules
+
+# vite
+**/vite.config.{js,ts,mjs,mts,cjs,cts}.timestamp*
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
+
 # Logs
 logs
 *.log
@@ -7,7 +20,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
 dist
 dist-ssr
 *.local

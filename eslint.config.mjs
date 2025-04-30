@@ -1,6 +1,5 @@
 import tseslint from 'typescript-eslint';
 import personal from '@tiagojacinto/eslint-config';
-import path from 'path';
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -15,11 +14,14 @@ export default tseslint.config(
         },
         react: true,
       },
+      formatting: {
+        perfectionist: true,
+      },
     },
   }),
   {
-    files: [path.join('./src', './**/*.view.tsx').replaceAll('\\', '/')],
-    extends: [personal.architecture.configs.view.jsx],
+    files: ['src/**/*.view.tsx'],
+    extends: [personal.architecture.configs.view.jsx.recommended],
   },
   personal.configs.browser,
 );
