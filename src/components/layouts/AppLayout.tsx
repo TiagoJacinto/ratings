@@ -1,11 +1,10 @@
 import { queryClient } from '@/lib/queryClient';
-import { getSQLiteDbFileHandle } from '@/queries/getSQLiteDbFileHandle';
+import { SQLiteDbFileHandle } from '@/resources/SQLiteDbFileHandle';
 import { QueryClientProvider, useMutation, useQuery } from '@tanstack/react-query';
-import localforage from 'localforage';
 import { Outlet } from 'react-router';
 
 import { DbProvider } from '../context/DbProvider';
-import { ChooseSQLiteDatabase } from '../sections/ChooseSQLiteDatabase.view';
+import { ChooseSQLiteDatabaseForm } from '../sections/ChooseSQLiteDatabaseForm.view';
 
 export function AppLayout() {
   return (
@@ -20,28 +19,22 @@ export function AppLayout() {
 }
 
 function WithDatabase({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isError, isLoading } = useQuery({
+    queryFn: SQLiteDbFileHandle.get,
     queryKey: ['sqliteDbFileHandle'],
-    queryFn: getSQLiteDbFileHandle,
   });
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error...</p>;
 
-  return data ? (
-    <DbProvider dbFileHandle={data}>{children}</DbProvider>
-  ) : (
-    <ChooseSQLiteDatabaseContainer />
-  );
+  return data ? <DbProvider dbFileHandle={data}>{children}</DbProvider> : <ChooseSQLiteDatabase />;
 }
 
-function ChooseSQLiteDatabaseContainer() {
+function ChooseSQLiteDatabase() {
   const { mutate } = useMutation({
-    mutationKey: ['addSqliteDbFileHandle'],
-    mutationFn: (sqliteDbFileHandle: FileSystemFileHandle) =>
-      localforage.setItem('sqliteDbFileHandle', sqliteDbFileHandle),
+    mutationFn: SQLiteDbFileHandle.set,
     onSuccess: (data) => queryClient.setQueryData(['sqliteDbFileHandle'], data),
   });
 
-  return <ChooseSQLiteDatabase onSubmit={(values) => mutate(values.sqliteDbFileHandle)} />;
+  return <ChooseSQLiteDatabaseForm onSubmit={(values) => mutate(values.sqliteDbFileHandle)} />;
 }

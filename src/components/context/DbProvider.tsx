@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 import { type DataSource } from 'typeorm';
 
-type DbContext = {
+type DbContext = Readonly<{
   orm: DataSource;
   clear(): Promise<void>;
-};
+}>;
 
 const DbContext = React.createContext({} as DbContext);
 
@@ -16,7 +16,7 @@ type Props = Readonly<{
 }>;
 
 export function DbProvider({ children, dbFileHandle }: Props) {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ['db'],
     queryFn: () => loadDb(dbFileHandle),
   });

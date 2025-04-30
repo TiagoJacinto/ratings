@@ -22,7 +22,7 @@ type Props = Readonly<{
   onSubmit: SubmitHandler<FormSchema>;
 }>;
 
-export function ChooseSQLiteDatabase({ onSubmit }: Props) {
+export function ChooseSQLiteDatabaseForm({ onSubmit }: Props) {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
