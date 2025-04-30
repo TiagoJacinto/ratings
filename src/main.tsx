@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 
 import './index.css';
 import { AppLayout } from './components/layouts/AppLayout';
+import { CreateRatingPage } from './pages/ratings/new/page';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -12,6 +13,10 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route element={<AppLayout />}>
           <Route path='*' element='404' />
+
+          <Route path='/ratings'>
+            <Route path='new' element={<CreateRatingPage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
