@@ -5,16 +5,16 @@ import { Outlet } from 'react-router';
 
 import { DbProvider } from '../context/DbProvider';
 import { ChooseSQLiteDatabaseForm } from '../sections/ChooseSQLiteDatabaseForm.view';
-import { UseCasesProvider } from '../context/UseCasesProvider';
+import { ModulesProvider } from '../context/ModulesProvider';
 
 export function AppLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className='h-full w-full p-4'>
         <WithDatabase>
-          <UseCasesProvider>
+          <ModulesProvider>
             <Outlet />
-          </UseCasesProvider>
+          </ModulesProvider>
         </WithDatabase>
       </div>
     </QueryClientProvider>

@@ -1,4 +1,4 @@
-import { useUseCases } from '@/components/context/UseCasesProvider';
+import { useModules } from '@/components/context/ModulesProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
 import { type UpdateRatingDTO } from '@/modules/ratings/use-cases/updateRating.use-case';
@@ -9,20 +9,20 @@ import { type Rating } from '@/view/domain/Rating';
 import { UpdateRatingForm } from './form.view';
 
 export function UpdateRatingPage() {
-  const { getRatingByIdUseCase, updateRatingUseCase } = useUseCases();
+  const { ratings } = useModules();
   const params = useParams();
   const id = z.number({ coerce: true }).parse(params.id);
 
   const navigate = useNavigate();
 
   const { mutateAsync } = useMutation({
-    mutationFn: (rating: UpdateRatingDTO) => updateRatingUseCase.execute(rating),
+    mutationFn: (rating: UpdateRatingDTO) => ratings.useCases.updateRating.execute(rating),
   });
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getRatingById'],
     queryFn: async () => {
-      const result = await getRatingByIdUseCase.execute({ id });
+      const result = await ratings.useCases.getRatingById.execute({ id });
 
       if (!result.isOk) throw result.error;
 
