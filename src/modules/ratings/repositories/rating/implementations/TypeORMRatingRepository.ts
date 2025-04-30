@@ -20,7 +20,14 @@ export class TypeORMRatingRepository implements RatingRepository {
   }
 
   async findById(id: number) {
-    const rating = await this.rating.findOneBy({ id });
+    const rating = await this.rating.findOne({
+      relations: {
+        weights: true,
+      },
+      where: {
+        id,
+      },
+    });
 
     if (!rating) return null;
 

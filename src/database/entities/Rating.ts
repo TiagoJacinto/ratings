@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+import type { Maybe } from '@/shared/core/Maybe';
+
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Weight } from './Weight';
@@ -18,7 +20,7 @@ export class Rating {
   name: string;
 
   @Column({ nullable: true, type: 'text' })
-  description?: string;
+  description: Maybe<string>;
 
   @OneToMany(() => Weight, (weight) => weight.rating, {
     cascade: ['insert', 'recover', 'soft-remove', 'update'],

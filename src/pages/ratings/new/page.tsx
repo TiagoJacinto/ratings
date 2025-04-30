@@ -23,7 +23,7 @@ export function CreateRatingPage() {
           return;
         }
 
-        await navigate(`/ratings/${result.value}`);
+        await navigate(`/ratings/${result.value}/edit`);
       }}
     />
   );

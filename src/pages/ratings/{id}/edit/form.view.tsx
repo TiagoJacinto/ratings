@@ -14,6 +14,7 @@ const formSchema = RatingSchema;
 type FormSchema = z.infer<typeof formSchema>;
 
 type Props = Readonly<{
+  defaultValues: FormSchema;
   onSubmit: SubmitHandler<{
     name: string;
     description?: string;
@@ -24,7 +25,7 @@ type Props = Readonly<{
   }>;
 }>;
 
-export function CreateRatingForm({ onSubmit }: Props) {
+export function UpdateRatingForm({ defaultValues, onSubmit }: Props) {
   useBeforeUnload((e) => {
     if (form.formState.isDirty && !form.formState.isSubmitSuccessful) {
       e.preventDefault();
@@ -32,10 +33,7 @@ export function CreateRatingForm({ onSubmit }: Props) {
   });
 
   const form = useForm<FormSchema>({
-    defaultValues: {
-      name: '',
-      weights: [],
-    },
+    defaultValues,
     resolver: zodResolver(formSchema),
   });
 

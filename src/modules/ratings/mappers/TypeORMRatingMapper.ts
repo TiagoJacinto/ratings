@@ -18,7 +18,7 @@ export class TypeORMRatingMapper {
   static toDomain(rating: RatingModel) {
     return Rating.create({
       name: rating.name,
-      description: rating.description,
+      description: rating.description ?? undefined,
       weights: Weights.create(rating.weights.map(TypeORMWeightMapper.toDomain)),
     });
   }
