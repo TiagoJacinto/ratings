@@ -15,6 +15,11 @@ export class TypeORMRatingRepository implements RatingRepository {
     this.rating = orm.getRepository(RatingModel);
   }
 
+  async findAll() {
+    const models = await this.rating.find();
+    return models.map(TypeORMRatingMapper.toDomain);
+  }
+
   count() {
     return this.rating.count();
   }
