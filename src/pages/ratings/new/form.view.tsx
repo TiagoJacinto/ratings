@@ -74,7 +74,7 @@ export function CreateRatingForm({ onSubmit }: Props) {
           />
 
           <Button type='submit' className='self-end'>
-            Save Rating
+            Create Rating
           </Button>
 
           <WeightsForm
