@@ -16,13 +16,21 @@ type Props = Readonly<{
 }>;
 
 export function DbProvider({ children, dbFileHandle }: Props) {
-  const { data, isError, isLoading } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ['db'],
     queryFn: () => loadDb(dbFileHandle),
   });
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error...</p>;
+  if (error) {
+    if (import.meta.env.DEV) {
+      console.error(error);
+
+      return <p>{error.message}</p>;
+    }
+
+    return <p>Error...</p>;
+  }
   if (!data) return <p>Data not found</p>;
 
   return <DbContext.Provider value={data}>{children}</DbContext.Provider>;

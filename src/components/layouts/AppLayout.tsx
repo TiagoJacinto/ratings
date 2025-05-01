@@ -22,13 +22,21 @@ export function AppLayout() {
 }
 
 function WithDatabase({ children }: Readonly<{ children: React.ReactNode }>) {
-  const { data, isError, isLoading } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryFn: SQLiteDbFileHandle.get,
     queryKey: ['sqliteDbFileHandle'],
   });
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error...</p>;
+  if (error) {
+    if (import.meta.env.DEV) {
+      console.error(error);
+
+      return <p>{error.message}</p>;
+    }
+
+    return <p>Error...</p>;
+  }
 
   return data ? <DbProvider dbFileHandle={data}>{children}</DbProvider> : <ChooseSQLiteDatabase />;
 }

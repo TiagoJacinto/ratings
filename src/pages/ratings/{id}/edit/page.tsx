@@ -19,7 +19,7 @@ export function UpdateRatingPage() {
     mutationFn: (rating: UpdateRatingDTO) => ratings.useCases.updateRating.execute(rating),
   });
 
-  const { data, isError, isLoading } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ['getRatingById'],
     queryFn: async () => {
       const result = await ratings.useCases.getRatingById.execute({ id });
@@ -31,7 +31,15 @@ export function UpdateRatingPage() {
   });
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error...</p>;
+  if (error) {
+    if (import.meta.env.DEV) {
+      console.error(error);
+
+      return <p>{error.message}</p>;
+    }
+
+    return <p>Error...</p>;
+  }
   if (!data) return <p>Data not found</p>;
 
   const rating: Rating = {
