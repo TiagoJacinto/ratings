@@ -1,4 +1,5 @@
 import { Weight as WeightModel } from '@/database/entities/Weight';
+import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 
 import { Weight } from '../domain/Weight';
 import { WeightValue } from '../domain/WeightValue';
@@ -14,9 +15,12 @@ export class TypeORMWeightMapper {
   }
 
   static toDomain(weight: WeightModel) {
-    return Weight.create({
-      name: weight.name,
-      value: WeightValue.create({ value: weight.value }).unwrapped,
-    });
+    return Weight.create(
+      {
+        name: weight.name,
+        value: WeightValue.create({ value: weight.value }).unwrapped,
+      },
+      new UniqueEntityID(weight.id),
+    );
   }
 }
