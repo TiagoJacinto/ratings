@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import { type UpdateRatingDTO } from '@/modules/ratings/use-cases/updateRating.use-case';
 import { z } from 'zod';
 import { useQuery } from '@tanstack/react-query';
-import { type Rating } from '@/view/domain/Rating';
+import { Query } from '@/components/Query';
 
 import { UpdateRatingForm } from './form.view';
 
@@ -30,40 +30,30 @@ export function UpdateRatingPage() {
     },
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) {
-    if (import.meta.env.DEV) {
-      console.error(error);
-
-      return <p>{error.message}</p>;
-    }
-
-    return <p>Error...</p>;
-  }
-  if (!data) return <p>Data not found</p>;
-
-  const rating: Rating = {
-    name: data.name,
-    description: data.description,
-    weights: data.weights.getItems().map((weight) => ({
-      id: crypto.randomUUID(),
-      name: weight.name,
-      value: weight.value.value,
-    })),
-  };
-
   return (
-    <UpdateRatingForm
-      defaultValues={rating}
-      onSubmit={async (data) => {
-        const result = await mutateAsync({ id, ...data });
+    <Query isLoading={isLoading} error={error} data={data}>
+      {(rating) => (
+        <UpdateRatingForm
+          defaultValues={{
+            name: rating.name,
+            description: rating.description,
+            weights: rating.weights.getItems().map((weight) => ({
+              id: crypto.randomUUID(),
+              name: weight.name,
+              value: weight.value.value,
+            })),
+          }}
+          onSubmit={async (data) => {
+            const result = await mutateAsync({ id, ...data });
 
-        if (!result.isOk) {
-          return;
-        }
+            if (!result.isOk) {
+              return;
+            }
 
-        await navigate(`/ratings/${id}`);
-      }}
-    />
+            await navigate(`/ratings/${id}`);
+          }}
+        />
+      )}
+    </Query>
   );
 }

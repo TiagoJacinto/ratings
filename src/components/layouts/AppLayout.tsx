@@ -6,6 +6,7 @@ import { Outlet } from 'react-router';
 import { DbProvider } from '../context/DbProvider';
 import { ChooseSQLiteDatabaseForm } from '../sections/ChooseSQLiteDatabaseForm.view';
 import { ModulesProvider } from '../context/ModulesProvider';
+import { Query } from '../Query';
 
 export function AppLayout() {
   return (
@@ -27,18 +28,13 @@ function WithDatabase({ children }: Readonly<{ children: React.ReactNode }>) {
     queryKey: ['sqliteDbFileHandle'],
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) {
-    if (import.meta.env.DEV) {
-      console.error(error);
-
-      return <p>{error.message}</p>;
-    }
-
-    return <p>Error...</p>;
-  }
-
-  return data ? <DbProvider dbFileHandle={data}>{children}</DbProvider> : <ChooseSQLiteDatabase />;
+  return (
+    <Query isLoading={isLoading} error={error} data={data}>
+      {(data) =>
+        data ? <DbProvider dbFileHandle={data}>{children}</DbProvider> : <ChooseSQLiteDatabase />
+      }
+    </Query>
+  );
 }
 
 function ChooseSQLiteDatabase() {

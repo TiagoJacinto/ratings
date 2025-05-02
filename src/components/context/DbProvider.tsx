@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useContext } from 'react';
 import { type DataSource } from 'typeorm';
 
+import { Query } from '../Query';
+
 type DbContext = Readonly<{
   orm: DataSource;
   clear(): Promise<void>;
@@ -21,19 +23,11 @@ export function DbProvider({ children, dbFileHandle }: Props) {
     queryFn: () => loadDb(dbFileHandle),
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) {
-    if (import.meta.env.DEV) {
-      console.error(error);
-
-      return <p>{error.message}</p>;
-    }
-
-    return <p>Error...</p>;
-  }
-  if (!data) return <p>Data not found</p>;
-
-  return <DbContext.Provider value={data}>{children}</DbContext.Provider>;
+  return (
+    <Query isLoading={isLoading} error={error} data={data}>
+      {(data) => <DbContext.Provider value={data}>{children}</DbContext.Provider>}
+    </Query>
+  );
 }
 
 export const useDb = () => useContext(DbContext);
