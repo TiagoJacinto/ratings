@@ -4,4 +4,5 @@ import { type Weights } from '../../domain/Weights';
 export interface WeightRepository {
   save(weight: Weight): Promise<void>;
   saveMany(weights: Weights): Promise<void>;
+  findManyByRatingId(ratingId: number): Promise<Weight[]>;
 }

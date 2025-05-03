@@ -12,6 +12,11 @@ export class TypeORMWeightRepository implements WeightRepository {
     this.weight = orm.getRepository(WeightModel);
   }
 
+  async findManyByRatingId(ratingId: number) {
+    const weights = await this.weight.find({ where: { rating: { id: ratingId } } });
+    return weights.map(TypeORMWeightMapper.toDomain);
+  }
+
   async save(weight: Weight) {
     await this.weight.save(TypeORMWeightMapper.toPersistence(weight));
   }
