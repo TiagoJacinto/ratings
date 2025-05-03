@@ -9,15 +9,15 @@ type WeightProps = {
 };
 
 export class Weight extends Entity<WeightProps> {
+  static create(props: WeightProps, id?: UniqueEntityID) {
+    return new this(props, id);
+  }
+
   get name() {
     return this.props.name;
   }
 
   get value() {
     return this.props.value;
-  }
-
-  static create(props: WeightProps, id?: UniqueEntityID) {
-    return new this(props, id);
   }
 }

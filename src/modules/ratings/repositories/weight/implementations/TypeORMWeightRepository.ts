@@ -1,7 +1,7 @@
 import { Weight as WeightModel } from '@/database/entities/Weight';
-import { type Weight } from '@/modules/weights/domain/Weight';
-import { type Weights } from '@/modules/weights/domain/Weights';
-import { TypeORMWeightMapper } from '@/modules/weights/mappers/TypeORMWeightMapper';
+import { type Weight } from '@/modules/ratings/domain/Weight';
+import { type Weights } from '@/modules/ratings/domain/Weights';
+import { TypeORMWeightMapper } from '@/modules/ratings/mappers/TypeORMWeightMapper';
 import { type Repository, type DataSource } from 'typeorm';
 
 import { type WeightRepository } from '../weight.repository';

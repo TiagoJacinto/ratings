@@ -1,5 +1,5 @@
-import { type Weight } from '../../domain/Weight';
-import { type Weights } from '../../domain/Weights';
+import { type Weight } from '../../../ratings/domain/Weight';
+import { type Weights } from '../../../ratings/domain/Weights';
 
 export interface WeightRepository {
   save(weight: Weight): Promise<void>;
