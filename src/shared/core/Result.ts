@@ -1,5 +1,5 @@
 import { toPairs } from 'ramda';
-import { type UnknownRecord, type Simplify, type ValueOf } from 'type-fest';
+import { type UnknownRecord, type Simplify, type Promisable } from 'type-fest';
 
 export class Ok<T> {
   readonly isOk = true;
@@ -42,18 +42,19 @@ export function err(error?: unknown) {
 }
 
 export namespace Result {
-  type MappedReturnType<T> = {
-    [i in keyof T]: T[i] extends () => infer TOk ? TOk : T[i];
-  };
+  type UnknownResult = Result<unknown, unknown>;
 
   type MappedOkValues<T> = Simplify<{
     [i in keyof T]: T[i] extends Result<infer TOk, unknown> ? TOk : never;
   }>;
 
   type GetErrValue<T, TValue extends keyof T = keyof T> =
-    ValueOf<T, TValue> extends Result<unknown, infer TErr> ? TErr : never;
+    T[TValue] extends Result<unknown, infer TErr> ? TErr : never;
 
-  type UnknownResult = Result<unknown, unknown>;
+  type MappedReturnType<T> = {
+    [i in keyof T]: T[i] extends () => infer TOk ? TOk : T[i];
+  };
+
   type TupleOfUnknownResults = readonly (UnknownResult | (() => UnknownResult))[];
   type RecordOfUnknownResults = Record<PropertyKey, UnknownResult | (() => UnknownResult)>;
 
@@ -90,6 +91,69 @@ export namespace Result {
 
     for (const [key, resultOrGetter] of toPairs(results as RecordOfUnknownResults)) {
       const result = typeof resultOrGetter === 'function' ? resultOrGetter() : resultOrGetter;
+
+      if (!result.isOk) return result;
+
+      unwrappedOkValues[key] = result.value;
+    }
+
+    return ok(unwrappedOkValues);
+  }
+
+  type MappedAsyncReturnType<T> = {
+    [i in keyof T]: T[i] extends () => Promise<infer TOk> ? TOk : T[i];
+  };
+
+  type AsyncTupleOfUnknownResults = readonly (
+    | Promisable<UnknownResult>
+    | (() => Promisable<UnknownResult>)
+  )[];
+  type AsyncRecordOfUnknownResults = Record<
+    PropertyKey,
+    Promisable<UnknownResult> | (() => Promisable<UnknownResult>)
+  >;
+
+  export function asyncCombine<const TAsyncResultsTuple extends AsyncTupleOfUnknownResults>(
+    results: TAsyncResultsTuple,
+  ): Promise<
+    Result<
+      MappedOkValues<MappedAsyncReturnType<TAsyncResultsTuple>>,
+      GetErrValue<MappedAsyncReturnType<TAsyncResultsTuple>, number>
+    >
+  >;
+
+  export function asyncCombine<TAsyncResultsRecord extends AsyncRecordOfUnknownResults>(
+    results: TAsyncResultsRecord,
+  ): Promise<
+    Result<
+      MappedOkValues<MappedAsyncReturnType<TAsyncResultsRecord>>,
+      GetErrValue<MappedAsyncReturnType<TAsyncResultsRecord>>
+    >
+  >;
+
+  export async function asyncCombine(
+    results: AsyncTupleOfUnknownResults | AsyncRecordOfUnknownResults,
+  ) {
+    if (Array.isArray(results)) {
+      const unwrappedOkValues = [];
+
+      for (const resultOrGetter of results as AsyncTupleOfUnknownResults) {
+        const result =
+          typeof resultOrGetter === 'function' ? await resultOrGetter() : await resultOrGetter;
+
+        if (!result.isOk) return result;
+
+        unwrappedOkValues.push(result.value);
+      }
+
+      return ok(unwrappedOkValues);
+    }
+
+    const unwrappedOkValues: UnknownRecord = {};
+
+    for (const [key, resultOrGetter] of toPairs(results as AsyncRecordOfUnknownResults)) {
+      const result =
+        typeof resultOrGetter === 'function' ? await resultOrGetter() : await resultOrGetter;
 
       if (!result.isOk) return result;
 
