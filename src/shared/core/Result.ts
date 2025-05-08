@@ -22,7 +22,7 @@ export class Err<E> {
     this.error = error;
   }
 
-  get unwrapped() {
+  get unwrapped(): never {
     throw new Error("This value is an error and can't be unwrapped.");
   }
 }
