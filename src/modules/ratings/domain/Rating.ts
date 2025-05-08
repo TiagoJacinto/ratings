@@ -1,4 +1,4 @@
-import { Weights } from '@/modules/weights/domain/Weights';
+import { Weights } from '@/modules/ratings/domain/Weights';
 import { Entity } from '@/shared/domain/Entity';
 import { type UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 import { type SetOptional } from 'type-fest';
@@ -10,6 +10,14 @@ type RatingProps = {
 };
 
 export class Rating extends Entity<RatingProps> {
+  static create(props: SetOptional<RatingProps, 'weights'>, id?: UniqueEntityID) {
+    return new this({ ...props, weights: props.weights ?? Weights.create() }, id);
+  }
+
+  get id() {
+    return this._id;
+  }
+
   get name() {
     return this.props.name;
   }
@@ -20,9 +28,5 @@ export class Rating extends Entity<RatingProps> {
 
   get weights() {
     return this.props.weights;
-  }
-
-  static create(props: SetOptional<RatingProps, 'weights'>, id?: UniqueEntityID) {
-    return new this({ ...props, weights: props.weights ?? Weights.create() }, id);
   }
 }
