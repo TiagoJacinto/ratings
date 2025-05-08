@@ -33,33 +33,6 @@ export async function loadDb(dbFileHandle: FileSystemFileHandle) {
 
   await dataSource.initialize();
 
-  {
-    const weight1 = new Weight({
-      name: 'Weight 1',
-      value: 50,
-    });
-
-    await dataSource.manager.save(weight1);
-
-    const weight2 = new Weight({
-      name: 'Weight 2',
-      value: 10,
-    });
-    await dataSource.manager.save(weight2);
-
-    const weight3 = new Weight({
-      name: 'Weight 3',
-      value: 40,
-    });
-    await dataSource.manager.save(weight3);
-
-    const rating = new Rating({
-      name: 'Rating 1',
-      weights: [weight1, weight2, weight3],
-    });
-    await dataSource.manager.save(rating);
-  }
-
   return {
     orm: dataSource,
     async clear() {
