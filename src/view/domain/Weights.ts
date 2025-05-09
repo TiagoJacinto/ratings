@@ -1,11 +1,15 @@
+import { type WithId } from '../utils/toFieldArray';
+import { type Id } from './Id';
 import { type Weight } from './Weight';
 import { WeightValue } from './WeightValue';
 
 export const total = (weights: Weight[]) => weights.reduce((sum, w) => sum + w.value, 0);
 
-export const actions = (weights: Weight[]) => ({
-  addNew: (weight: Weight) => [...weights, weight],
-  changeValue: (weight: Weight, newValue: number) => {
+type FormWeight = WithId<Weight & { criterionId: Id }>;
+
+export const actions = (weights: FormWeight[]) => ({
+  addNew: (weight: FormWeight) => [...weights, weight],
+  changeValue: (weight: FormWeight, newValue: number) => {
     const previousValue = weight.value;
 
     if (
