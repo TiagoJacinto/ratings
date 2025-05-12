@@ -6,6 +6,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Weight } from './Weight';
 
 type Props = {
+  id?: number;
   name: string;
   description?: string;
   weights: Weight[];
@@ -28,6 +29,7 @@ export class Rating {
   weights: Weight[];
 
   constructor(props: Props | undefined) {
+    this.id = props?.id!;
     this.name = props?.name!;
     this.description = props?.description;
     this.weights = props?.weights!;

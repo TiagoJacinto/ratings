@@ -2,9 +2,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Rating } from './Rating';
+// import { Criterion } from './Criterion';
 
 type Props = {
-  name: string;
+  id?:number
   value: number;
 };
 
@@ -13,11 +14,13 @@ export class Weight {
   @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
-  @Column({ nullable: false, type: 'text' })
-  name: string;
-
   @Column({ nullable: false, type: 'real' })
   value: number;
+
+  // @ManyToOne(() => Criterion, (criterion) => criterion.weights, {
+  //   cascade: true,
+  // })
+  // criterion!: Criterion;
 
   @ManyToOne(() => Rating, (rating) => rating.weights, {
     cascade: true,
@@ -25,7 +28,7 @@ export class Weight {
   rating!: Rating;
 
   constructor(props: Props | undefined) {
-    this.name = props?.name!;
+    this.id= props?.id!;
     this.value = props?.value!;
   }
 }

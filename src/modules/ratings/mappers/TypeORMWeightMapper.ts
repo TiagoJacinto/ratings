@@ -6,7 +6,10 @@ import { WeightValue } from '../domain/WeightValue';
 
 export class TypeORMWeightMapper {
   static toPersistence(weight: Weight) {
+    const id = weight.id.toValue();
+
     const model = new WeightModel({
+      id: typeof id === 'number' ? id : undefined,
       name: weight.name,
       value: weight.value.value,
     });
