@@ -1,15 +1,15 @@
 import { Rating as RatingModel } from '@/database/entities/Rating';
-import { TypeORMWeightMapper } from '@/modules/weights/mappers/TypeORMWeightMapper';
 import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 
 import { Rating } from '../domain/Rating';
+import { TypeORMWeightMapper } from './TypeORMWeightMapper';
 
 export class TypeORMRatingMapper {
   static toPersistence(rating: Rating) {
     const model = new RatingModel({
       name: rating.name,
       description: rating.description,
-      weights: rating.weights.getItems().map(TypeORMWeightMapper.toPersistence),
+      weights: rating.weights.map(TypeORMWeightMapper.toPersistence),
     });
 
     return model;

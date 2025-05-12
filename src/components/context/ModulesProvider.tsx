@@ -57,7 +57,7 @@ export function ModulesProvider({ children }: Props) {
   const alternativeCategoryRepository = new TypeORMAlternativeCategoryRepository(orm);
   const criterionRepository = new TypeORMCriterionRepository(orm);
   const weightRepository = new TypeORMWeightRepository(orm);
-  const ratingRepository = new TypeORMRatingRepository(orm, weightRepository);
+  const ratingRepository = new TypeORMRatingRepository(orm);
 
   return (
     <ModulesContext.Provider

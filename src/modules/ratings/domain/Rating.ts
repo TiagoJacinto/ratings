@@ -1,17 +1,18 @@
-import { Weights } from '@/modules/ratings/domain/Weights';
 import { Entity } from '@/shared/domain/Entity';
 import { type UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 import { type SetOptional } from 'type-fest';
 
+import { type Weight } from './Weight';
+
 type RatingProps = {
   name: string;
   description?: string;
-  weights: Weights;
+  weights: Weight[];
 };
 
 export class Rating extends Entity<RatingProps> {
   static create(props: SetOptional<RatingProps, 'weights'>, id?: UniqueEntityID) {
-    return new this({ ...props, weights: props.weights ?? Weights.create() }, id);
+    return new this({ ...props, weights: props.weights ?? [] }, id);
   }
 
   get id() {

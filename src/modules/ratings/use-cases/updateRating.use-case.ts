@@ -1,6 +1,5 @@
-import { Weight } from '@/modules/weights/domain/Weight';
-import { Weights } from '@/modules/weights/domain/Weights';
-import { WeightValue } from '@/modules/weights/domain/WeightValue';
+import { Weight } from '@/modules/ratings/domain/Weight';
+import { WeightValue } from '@/modules/ratings/domain/WeightValue';
 import { err, ok, Result } from '@/shared/core/Result';
 import { type UseCase } from '@/shared/core/UseCase';
 
@@ -44,7 +43,7 @@ export class UpdateRatingUseCase implements UseCase<UpdateRatingDTO, Response> {
     const rating = Rating.create({
       name,
       description,
-      weights: Weights.create(weightsOrError.value),
+      weights: weightsOrError.value,
     });
 
     await this.ratingRepository.save(rating);
