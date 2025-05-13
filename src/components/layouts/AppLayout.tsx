@@ -29,7 +29,7 @@ function WithDatabase({ children }: Readonly<{ children: React.ReactNode }>) {
   });
 
   return (
-    <Query isLoading={isLoading} error={error} data={data}>
+    <Query checkData={false} isLoading={isLoading} error={error} data={data}>
       {(data) =>
         data ? <DbProvider dbFileHandle={data}>{children}</DbProvider> : <ChooseSQLiteDatabase />
       }

@@ -1,13 +1,25 @@
 import { type JSX } from 'react';
 
-type Props<TData> = Readonly<{
-  data: TData | undefined;
-  error: unknown;
-  isLoading: boolean;
-  children: (data: TData) => JSX.Element;
-}>;
+type Props<TData> = Readonly<
+  | {
+      checkData?: true;
+      data: TData | undefined;
+      error: unknown;
+      isLoading: boolean;
+      children: (data: TData) => JSX.Element;
+    }
+  | {
+      checkData: false;
+      data: TData | undefined;
+      error: unknown;
+      isLoading: boolean;
+      children: (data: TData | undefined) => JSX.Element;
+    }
+>;
 
-export function Query<TData>({ children, data, error, isLoading }: Props<TData>) {
+export function Query<TData>({ checkData, children, data, error, isLoading }: Props<TData>) {
+  checkData ??= true;
+
   if (isLoading) return <p>Loading...</p>;
   if (error) {
     if (import.meta.env.DEV) {
@@ -18,7 +30,7 @@ export function Query<TData>({ children, data, error, isLoading }: Props<TData>)
 
     return <p>Error...</p>;
   }
-  if (!data) return <p>Data not found</p>;
+  if (checkData && !data) return <p>Data not found</p>;
 
-  return children(data);
+  return children(data as TData);
 }
