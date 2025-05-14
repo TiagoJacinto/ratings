@@ -1,5 +1,5 @@
-export class Identifier<T> {
-  protected constructor(private readonly value: T) {
+export abstract class Identifier<T> {
+  protected constructor(protected readonly value: T) {
     this.value = value;
   }
 
