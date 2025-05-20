@@ -1,7 +1,8 @@
+import { type DataSource, type Repository } from 'typeorm';
+
 import { Rating as RatingModel } from '@/database/entities/Rating';
 import { type Rating } from '@/modules/ratings/domain/Rating';
 import { TypeORMRatingMapper } from '@/modules/ratings/mappers/TypeORMRatingMapper';
-import { type DataSource, type Repository } from 'typeorm';
 
 import { type RatingRepository } from '../rating.repository';
 
@@ -9,6 +10,20 @@ export class TypeORMRatingRepository implements RatingRepository {
   private readonly rating: Repository<RatingModel>;
   constructor(orm: DataSource) {
     this.rating = orm.getRepository(RatingModel);
+  }
+
+  async findManyByAlternativeCategoryId(id: number) {
+    const models = await this.rating.find({
+      relations: {
+        alternativeCategory: true,
+      },
+      where: {
+        alternativeCategory: {
+          id,
+        },
+      },
+    });
+    return models.map(TypeORMRatingMapper.toDomain);
   }
 
   async findAll() {
@@ -22,6 +37,9 @@ export class TypeORMRatingRepository implements RatingRepository {
 
   async findById(id: number) {
     const rating = await this.rating.findOne({
+      relations: {
+        alternativeCategory: true,
+      },
       where: {
         id,
       },

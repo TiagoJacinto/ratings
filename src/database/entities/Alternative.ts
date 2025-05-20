@@ -3,20 +3,19 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'ty
 
 import type { Maybe } from '@/shared/core/Maybe';
 
-import { Weight } from './Weight';
 import { AlternativeCategory } from './AlternativeCategory';
+import { RatedCriterion } from './RatedCriterion';
 import { manyToOneOptions } from '../constants';
 
 type Props = {
   id?: number;
   name: string;
-  alternativeCategory?: AlternativeCategory;
   description?: string;
-  weights?: Weight[];
+  ratedCriteria: RatedCriterion[];
 };
 
-@Entity({ name: 'ratings' })
-export class Rating {
+@Entity({ name: 'alternatives' })
+export class Alternative {
   @PrimaryGeneratedColumn({ type: 'integer' })
   id!: number;
 
@@ -26,14 +25,14 @@ export class Rating {
   @Column({ nullable: true, type: 'text' })
   description: Maybe<string>;
 
-  @OneToMany(() => Weight, (weight) => weight.rating, {
+  @OneToMany(() => RatedCriterion, (ratedCriterion) => ratedCriterion.alternative, {
     cascade: true,
   })
-  weights?: Weight[];
+  ratedCriteria?: RatedCriterion[];
 
   @ManyToOne(
     () => AlternativeCategory,
-    (alternativeCategory) => alternativeCategory.ratings,
+    (alternativeCategory) => alternativeCategory.alternatives,
     manyToOneOptions,
   )
   alternativeCategory?: AlternativeCategory;
@@ -41,8 +40,7 @@ export class Rating {
   constructor(props: Props | undefined) {
     this.id = props?.id!;
     this.name = props?.name!;
+    this.ratedCriteria = props?.ratedCriteria;
     this.description = props?.description;
-    this.weights = props?.weights;
-    this.alternativeCategory = props?.alternativeCategory;
   }
 }

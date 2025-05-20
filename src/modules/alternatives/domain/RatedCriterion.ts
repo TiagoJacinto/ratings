@@ -1,16 +1,16 @@
 import { Entity } from '@/shared/domain/Entity';
 import { type UniqueEntityID } from '@/shared/domain/UniqueEntityId';
-import { type Criterion } from '@/modules/alternatives/domain/Criterion';
 
-import { type WeightValue } from './WeightValue';
+import { type RatedCriterionValue } from './RatedCriterionValue';
+import { type Criterion } from './Criterion';
 
-type WeightProps = {
+type RatedCriterionProps = {
   criterion?: Criterion;
-  value: WeightValue;
+  value: RatedCriterionValue;
 };
 
-export class Weight extends Entity<WeightProps> {
-  static create(props: WeightProps, id?: UniqueEntityID) {
+export class RatedCriterion extends Entity<RatedCriterionProps> {
+  static create(props: RatedCriterionProps, id?: UniqueEntityID) {
     return new this(props, id);
   }
 

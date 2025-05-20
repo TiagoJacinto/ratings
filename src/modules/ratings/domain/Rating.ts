@@ -1,13 +1,16 @@
+import { type SetOptional } from 'type-fest';
+
 import { Entity } from '@/shared/domain/Entity';
 import { type UniqueEntityID } from '@/shared/domain/UniqueEntityId';
-import { type SetOptional } from 'type-fest';
+import { type AlternativeCategory } from '@/modules/alternatives/domain/AlternativeCategory';
 
 import { type Weight } from './Weight';
 
 type RatingProps = {
   name: string;
+  alternativeCategory?: AlternativeCategory;
   description?: string;
-  weights: Weight[];
+  weights?: Weight[];
 };
 
 export class Rating extends Entity<RatingProps> {
@@ -25,6 +28,10 @@ export class Rating extends Entity<RatingProps> {
 
   get description() {
     return this.props.description;
+  }
+
+  get alternativeCategory() {
+    return this.props.alternativeCategory;
   }
 
   get weights() {

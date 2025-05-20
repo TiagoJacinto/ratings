@@ -12,7 +12,14 @@ export class TypeORMWeightRepository implements WeightRepository {
   }
 
   async findManyByRatingId(ratingId: number) {
-    const weights = await this.weight.find({ where: { rating: { id: ratingId } } });
+    const weights = await this.weight.find({
+      relations: {
+        criterion: {
+          alternativeCategory: true,
+        },
+      },
+      where: { rating: { id: ratingId } },
+    });
     return weights.map(TypeORMWeightMapper.toDomain);
   }
 

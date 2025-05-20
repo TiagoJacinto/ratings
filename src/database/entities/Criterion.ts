@@ -1,23 +1,25 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 
 import type { Maybe } from '@/shared/core/Maybe';
 
-import { Weight } from './Weight';
+import { RatedCriterion } from './RatedCriterion';
 import { AlternativeCategory } from './AlternativeCategory';
 import { manyToOneOptions } from '../constants';
+import { Weight } from './Weight';
 
 type Props = {
   id?: number;
   name: string;
   alternativeCategory?: AlternativeCategory;
   description?: string;
+  ratedCriteria?: RatedCriterion[];
   weights?: Weight[];
 };
 
-@Entity({ name: 'ratings' })
-export class Rating {
-  @PrimaryGeneratedColumn({ type: 'integer' })
+@Entity({ name: 'criteria' })
+export class Criterion {
+  @PrimaryColumn({ type: 'integer' })
   id!: number;
 
   @Column({ nullable: false, type: 'text' })
@@ -26,14 +28,19 @@ export class Rating {
   @Column({ nullable: true, type: 'text' })
   description: Maybe<string>;
 
-  @OneToMany(() => Weight, (weight) => weight.rating, {
+  @OneToMany(() => RatedCriterion, (ratedCriterion) => ratedCriterion.criterion, {
+    cascade: true,
+  })
+  ratedCriteria?: RatedCriterion[];
+
+  @OneToMany(() => Weight, (weight) => weight.criterion, {
     cascade: true,
   })
   weights?: Weight[];
 
   @ManyToOne(
     () => AlternativeCategory,
-    (alternativeCategory) => alternativeCategory.ratings,
+    (alternativeCategory) => alternativeCategory.criteria,
     manyToOneOptions,
   )
   alternativeCategory?: AlternativeCategory;
@@ -42,6 +49,7 @@ export class Rating {
     this.id = props?.id!;
     this.name = props?.name!;
     this.description = props?.description;
+    this.ratedCriteria = props?.ratedCriteria;
     this.weights = props?.weights;
     this.alternativeCategory = props?.alternativeCategory;
   }
