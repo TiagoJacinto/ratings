@@ -1,10 +1,9 @@
 import { randomUUID } from 'crypto';
 
 import { Identifier } from './Identifier';
-import { type RawId } from './RawId';
 
-export class UniqueEntityID extends Identifier<RawId> {
-  constructor(id?: RawId) {
+export class UniqueEntityID extends Identifier<string | number> {
+  constructor(id?: string | number) {
     super(id ?? randomUUID?.() ?? crypto.randomUUID());
   }
 }
