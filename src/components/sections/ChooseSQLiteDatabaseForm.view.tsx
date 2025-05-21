@@ -10,10 +10,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { OpenFilePickerButton } from '../molecules/OpenFilePickerButton';
 
 const formSchema = z.object({
+  permissionToUseFileHandle: z.literal<boolean>(true),
   sqliteDbFileHandle: z.unknown().refine((value) => value instanceof FileSystemFileHandle, {
     message: 'Please choose a SQLite database',
   }),
-  permissionToUseFileHandle: z.literal<boolean>(true),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -24,10 +24,10 @@ type Props = Readonly<{
 
 export function ChooseSQLiteDatabaseForm({ onSubmit }: Props) {
   const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       permissionToUseFileHandle: false,
     },
+    resolver: zodResolver(formSchema),
   });
 
   const requestPermissionToUseFile = async () => {
@@ -79,7 +79,7 @@ export function ChooseSQLiteDatabaseForm({ onSubmit }: Props) {
                 control={form.control}
                 name='permissionToUseFileHandle'
                 render={({ field }) => (
-                  <FormItem className='mt-2 space-x-2'>
+                  <FormItem className='mt-2 flex gap-x-2'>
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -93,7 +93,7 @@ export function ChooseSQLiteDatabaseForm({ onSubmit }: Props) {
                 )}
               />
             </CardContent>
-            <CardFooter>
+            <CardFooter className='mt-4'>
               <Button type='submit'>Continue</Button>
             </CardFooter>
           </form>
