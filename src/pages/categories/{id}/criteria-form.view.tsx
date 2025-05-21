@@ -18,6 +18,14 @@ import { arrayActionsOf } from '@/view/utils/arrayActionsOf';
 import { stateActionsOf } from '@/view/utils/stateActionsOf';
 import { useTemporaryId } from '@/hooks/useTemporaryId';
 import { Textarea } from '@/components/atoms/textarea';
+import { usePagination } from '@/hooks/usePagination';
+import {
+  Pagination,
+  PaginationButtonNext,
+  PaginationButtonPrevious,
+  PaginationContent,
+  PaginationItem,
+} from '@/components/atoms/pagination';
 
 import { type FormSchema } from './form.view';
 
@@ -27,6 +35,14 @@ type CriteriaFormProps = Readonly<{
 
 export function CriteriaForm({ form }: CriteriaFormProps) {
   const criteria = form.watch('criteria');
+
+  const { currentPage, goToNextPage, goToPreviousPage, isFirstPage, isLastPage, pageSize } =
+    usePagination({
+      pageSize: 10,
+      totalItems: criteria.length,
+    });
+
+  const paginatedCriteria = criteria.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const setCriteria = (criteria: FormSchema['criteria']) =>
     form.setValue('criteria', criteria, { shouldDirty: true });
@@ -59,7 +75,7 @@ export function CriteriaForm({ form }: CriteriaFormProps) {
           {criteria.length === 0 ? (
             <h1 className='text-center text-sm'>No Data</h1>
           ) : (
-            criteria.map((field, index) => (
+            paginatedCriteria.map((field, index) => (
               <li key={field.id}>
                 <DialogTrigger asChild onClick={() => setIndex(index)}>
                   <div className='hover:bg-accent hover:text-accent-foreground flex items-center justify-between gap-3 rounded-md px-3.5 py-2 hover:cursor-pointer hover:underline hover:underline-offset-3'>
@@ -82,6 +98,18 @@ export function CriteriaForm({ form }: CriteriaFormProps) {
             ))
           )}
         </ul>
+
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationButtonPrevious disabled={isFirstPage} onClick={() => goToPreviousPage()} />
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationButtonNext disabled={isLastPage} onClick={() => goToNextPage()} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
 
       <DialogContent className='top-[35%] sm:max-w-[425px]' aria-describedby=''>

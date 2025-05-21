@@ -35,6 +35,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu';
+import { usePagination } from '@/hooks/usePagination';
 
 import { type FormSchema } from './form.view';
 
@@ -42,13 +43,19 @@ type AlternativesFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
 }>;
 
-const pageSize = 10;
-
 export function AlternativesForm({ form }: AlternativesFormProps) {
-  const [page, setPage] = useState(1);
-
   const alternatives = form.watch('alternatives');
-  const paginatedAlternatives = alternatives.slice((page - 1) * pageSize, page * pageSize);
+
+  const { currentPage, goToNextPage, goToPreviousPage, isFirstPage, isLastPage, pageSize } =
+    usePagination({
+      pageSize: 10,
+      totalItems: alternatives.length,
+    });
+
+  const paginatedAlternatives = alternatives.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
 
   const setAlternatives = (alternatives: FormSchema['alternatives']) =>
     form.setValue('alternatives', alternatives, { shouldDirty: true });
@@ -110,17 +117,11 @@ export function AlternativesForm({ form }: AlternativesFormProps) {
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationButtonPrevious
-                disabled={page === 1}
-                onClick={() => setPage(Math.max(page - 1, 1))}
-              />
+              <PaginationButtonPrevious disabled={isFirstPage} onClick={() => goToPreviousPage()} />
             </PaginationItem>
 
             <PaginationItem>
-              <PaginationButtonNext
-                disabled={page === Math.ceil(alternatives.length / pageSize)}
-                onClick={() => setPage(page + 1)}
-              />
+              <PaginationButtonNext disabled={isLastPage} onClick={() => goToNextPage()} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

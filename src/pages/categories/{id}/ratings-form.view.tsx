@@ -35,6 +35,14 @@ import { FormControl, FormField, FormItem, FormLabel } from '@/components/atoms/
 import { Textarea } from '@/components/atoms/textarea';
 import { type RatedCriterion } from '@/view/domain/RatedCriterion';
 import { Input } from '@/components/atoms/input';
+import { usePagination } from '@/hooks/usePagination';
+import {
+  Pagination,
+  PaginationButtonNext,
+  PaginationButtonPrevious,
+  PaginationContent,
+  PaginationItem,
+} from '@/components/atoms/pagination';
 
 import { type FormSchema } from './form.view';
 
@@ -44,6 +52,14 @@ type RatingsFormProps = Readonly<{
 
 export function RatingsForm({ form }: RatingsFormProps) {
   const ratings = form.watch('ratings');
+
+  const { currentPage, goToNextPage, goToPreviousPage, isFirstPage, isLastPage, pageSize } =
+    usePagination({
+      pageSize: 10,
+      totalItems: ratings.length,
+    });
+
+  const paginatedRatings = ratings.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const setRatings = (ratings: FormSchema['ratings']) =>
     form.setValue('ratings', ratings, { shouldDirty: true });
@@ -88,7 +104,7 @@ export function RatingsForm({ form }: RatingsFormProps) {
             {ratings.length === 0 ? (
               <h1 className='text-center text-sm'>No Data</h1>
             ) : (
-              ratings.map((field, index) => (
+              paginatedRatings.map((field, index) => (
                 <li key={field.id}>
                   <DialogTrigger asChild onClick={() => setIndex(index)}>
                     <div className='hover:bg-accent hover:text-accent-foreground flex items-center justify-between gap-3 rounded-md px-3.5 py-2 hover:cursor-pointer hover:underline hover:underline-offset-3'>
@@ -112,6 +128,18 @@ export function RatingsForm({ form }: RatingsFormProps) {
             )}
           </ul>
         )}
+
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationButtonPrevious disabled={isFirstPage} onClick={() => goToPreviousPage()} />
+            </PaginationItem>
+
+            <PaginationItem>
+              <PaginationButtonNext disabled={isLastPage} onClick={() => goToNextPage()} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
 
       <DialogPortal>
