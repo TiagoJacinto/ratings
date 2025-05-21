@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router';
 import { z } from 'zod';
+import { toast } from 'sonner';
 
 import { useModules } from '@/components/context/ModulesProvider';
 import { Query } from '@/components/Query';
@@ -86,7 +87,11 @@ export function AlternativeCategoryPage() {
         <UpdateAlternativeCategoryForm
           defaultValues={category}
           onSubmit={async (data) => {
-            await mutateAsync({ id, ...data });
+            const result = await mutateAsync({ id, ...data });
+
+            if (!result.isOk) return;
+
+            toast('Category saved successfully');
           }}
         />
       )}
