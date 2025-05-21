@@ -43,8 +43,7 @@ import {
   PaginationContent,
   PaginationItem,
 } from '@/components/atoms/pagination';
-
-import { type FormSchema } from './form.view';
+import { type FormSchema } from '@/view/form.schema';
 
 type RatingsFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;

@@ -6,7 +6,7 @@ import { useModules } from '@/components/context/ModulesProvider';
 import { Query } from '@/components/Query';
 import { type UpdateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/update-alternative-category.use-case';
 
-import { AlternativeCategoryForm } from './form.view';
+import { UpdateAlternativeCategoryForm } from './form.view';
 
 export function AlternativeCategoryPage() {
   const modules = useModules();
@@ -83,14 +83,10 @@ export function AlternativeCategoryPage() {
   return (
     <Query isLoading={isLoading} error={error} data={data}>
       {(category) => (
-        <AlternativeCategoryForm
+        <UpdateAlternativeCategoryForm
           defaultValues={category}
           onSubmit={async (data) => {
-            const result = await mutateAsync({ id, ...data });
-
-            if (!result.isOk) {
-              return;
-            }
+            await mutateAsync({ id, ...data });
           }}
         />
       )}

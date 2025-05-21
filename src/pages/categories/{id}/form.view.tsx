@@ -1,70 +1,25 @@
-/* eslint-disable no-restricted-syntax/only-one-function-export */
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useBeforeUnload, useSearchParams } from 'react-router';
-import { z } from 'zod';
 
 import { Button } from '@/components/atoms/button';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/atoms/form';
 import { Input } from '@/components/atoms/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/tabs';
 import { Textarea } from '@/components/atoms/textarea';
-import { WeightSchema } from '@/view/domain/Weight';
-import { IdSchema } from '@/view/domain/Id';
 import { useEffectAfterMount } from '@/hooks/useEffectAfterMount';
-import { RatedCriterionSchema } from '@/view/domain/RatedCriterion';
-
-import { CriteriaForm } from './criteria-form.view';
-import { RatingsForm } from './ratings-form.view';
-import { AlternativesForm } from './alternatives-form.view';
-
-const formSchema = z.object({
-  name: z.string().min(1, {
-    message: 'Name is required',
-  }),
-  alternatives: z.array(
-    z.object({
-      id: IdSchema,
-
-      name: z.string().min(1, {
-        message: 'Name is required',
-      }),
-      description: z.string().optional(),
-      ratedCriteria: z.array(RatedCriterionSchema),
-    }),
-  ),
-  criteria: z.array(
-    z.object({
-      id: IdSchema,
-
-      name: z.string().min(1, {
-        message: 'Name is required',
-      }),
-      description: z.string().optional(),
-    }),
-  ),
-  description: z.string().optional(),
-  ratings: z.array(
-    z.object({
-      id: IdSchema,
-
-      name: z.string().min(1, {
-        message: 'Name is required',
-      }),
-      description: z.string().optional(),
-      weights: z.array(WeightSchema),
-    }),
-  ),
-});
-
-export type FormSchema = z.infer<typeof formSchema>;
+import { H4 } from '@/components/atoms/typography/h4';
+import { CriteriaForm } from '@/components/forms/criteria-form.view';
+import { RatingsForm } from '@/components/forms/ratings-form.view';
+import { AlternativesForm } from '@/components/forms/alternatives-form.view';
+import { type FormSchema, formSchema } from '@/view/form.schema';
 
 type Props = Readonly<{
   defaultValues: Partial<FormSchema>;
   onSubmit: SubmitHandler<FormSchema>;
 }>;
 
-export function AlternativeCategoryForm({ defaultValues, onSubmit }: Props) {
+export function UpdateAlternativeCategoryForm({ defaultValues, onSubmit }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useBeforeUnload((e) => {
@@ -86,7 +41,7 @@ export function AlternativeCategoryForm({ defaultValues, onSubmit }: Props) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='w-120'>
         <div className='flex items-center justify-between'>
-          <h1>{form.watch('name')}</h1>
+          <H4>Update Alternative Category</H4>
 
           <Button>Save</Button>
         </div>

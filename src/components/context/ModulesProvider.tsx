@@ -72,6 +72,7 @@ export function ModulesProvider({ children }: Props) {
           useCases: {
             createAlternativeCategory: new CreateAlternativeCategoryUseCase(
               alternativeCategoryRepository,
+              idTracker,
             ),
             getAlternativeCategoryById: new GetAlternativeCategoryByIdUseCase(
               alternativeCategoryRepository,
