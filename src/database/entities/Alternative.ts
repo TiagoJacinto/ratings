@@ -11,7 +11,7 @@ type Props = {
   id?: number;
   name: string;
   description?: string;
-  ratedCriteria: RatedCriterion[];
+  ratedCriteria?: RatedCriterion[];
 };
 
 @Entity({ name: 'alternatives' })

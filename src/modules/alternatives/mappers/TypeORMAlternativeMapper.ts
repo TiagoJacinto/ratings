@@ -13,7 +13,7 @@ export class TypeORMAlternativeMapper {
       id: typeof id === 'number' ? id : undefined,
       name: alternative.name,
       description: alternative.description,
-      ratedCriteria: alternative.ratedCriteria.map(TypeORMRatedCriterionMapper.toPersistence),
+      ratedCriteria: alternative.ratedCriteria?.map(TypeORMRatedCriterionMapper.toPersistence),
     });
   }
 
@@ -21,9 +21,9 @@ export class TypeORMAlternativeMapper {
     return Alternative.create(
       {
         name: alternative.name,
-        alternativeCategory: TypeORMAlternativeCategoryMapper.toDomain(
-          alternative.alternativeCategory,
-        ),
+        alternativeCategory:
+          alternative.alternativeCategory &&
+          TypeORMAlternativeCategoryMapper.toDomain(alternative.alternativeCategory),
         description: alternative.description ?? undefined,
       },
       new UniqueEntityID(alternative.id),

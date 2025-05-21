@@ -8,9 +8,9 @@ import { type AlternativeCategory } from './AlternativeCategory';
 
 type AlternativeProps = {
   name: string;
-  alternativeCategory: AlternativeCategory;
+  alternativeCategory?: AlternativeCategory;
   description?: string;
-  ratedCriteria: RatedCriterion[];
+  ratedCriteria?: RatedCriterion[];
 };
 
 export class Alternative extends Entity<AlternativeProps> {
