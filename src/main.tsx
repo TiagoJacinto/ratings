@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route element={<AppLayout />}>
           <Route path='*' element='404' />
-          <Route path='/categories'>
+          <Route path='/'>
             <Route index element={<CategoriesPage />} />
             <Route path='new' element={<CreateAlternativeCategoryPage />} />
             <Route path=':id' element={<AlternativeCategoryPage />} />
