@@ -33,6 +33,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu';
 import { usePagination } from '@/hooks/usePagination';
@@ -240,21 +241,45 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
             {criteria.length === 0 ? (
               <h1 className='text-center text-sm'>No criteria defined</h1>
             ) : (
-              criteria.map((criterion) => (
+              <>
                 <DropdownMenuItem
-                  key={criterion.id}
                   onClick={() =>
-                    append({
-                      id: getNextTempId(),
-                      criterionId: criterion.id,
-                      value: 0,
-                    })
+                    setRatedCriteria([
+                      ...ratedCriteria,
+                      ...criteria
+                        .filter(
+                          (criterion) => !ratedCriteria.some((w) => w.criterionId === criterion.id),
+                        )
+                        .map((criterion) => ({
+                          id: getNextTempId(),
+                          criterionId: criterion.id,
+                          value: 0,
+                        })),
+                    ])
                   }
-                  disabled={ratedCriteria.some((w) => w.criterionId === criterion.id)}
+                  disabled={criteria.every((criterion) =>
+                    ratedCriteria.some((w) => w.criterionId === criterion.id),
+                  )}
                 >
-                  {criterion.name}
+                  All
                 </DropdownMenuItem>
-              ))
+                <DropdownMenuSeparator />
+                {criteria.map((criterion) => (
+                  <DropdownMenuItem
+                    key={criterion.id}
+                    onClick={() =>
+                      append({
+                        id: getNextTempId(),
+                        criterionId: criterion.id,
+                        value: 0,
+                      })
+                    }
+                    disabled={ratedCriteria.some((w) => w.criterionId === criterion.id)}
+                  >
+                    {criterion.name}
+                  </DropdownMenuItem>
+                ))}
+              </>
             )}
           </DropdownMenuContent>
         </DropdownMenu>

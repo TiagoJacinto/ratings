@@ -23,6 +23,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu';
 import { stepBy } from '@/lib/utils';
@@ -315,21 +316,43 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
             {criteria.length === 0 ? (
               <h1 className='text-center text-sm'>No criteria defined</h1>
             ) : (
-              criteria.map((criterion) => (
+              <>
                 <DropdownMenuItem
-                  key={criterion.id}
                   onClick={() =>
-                    viewModel.actions.addNew({
-                      id: getNextTempId(),
-                      criterionId: criterion.id,
-                      value: weights.length === 0 ? WeightValue.MAX : WeightValue.MIN,
-                    })
+                    setWeights([
+                      ...weights,
+                      ...criteria
+                        .filter((criterion) => !weights.some((w) => w.criterionId === criterion.id))
+                        .map((criterion) => ({
+                          id: getNextTempId(),
+                          criterionId: criterion.id,
+                          value: 0,
+                        })),
+                    ])
                   }
-                  disabled={weights.some((w) => w.criterionId === criterion.id)}
+                  disabled={criteria.every((criterion) =>
+                    weights.some((w) => w.criterionId === criterion.id),
+                  )}
                 >
-                  {criterion.name}
+                  All
                 </DropdownMenuItem>
-              ))
+                <DropdownMenuSeparator />
+                {criteria.map((criterion) => (
+                  <DropdownMenuItem
+                    key={criterion.id}
+                    onClick={() =>
+                      viewModel.actions.addNew({
+                        id: getNextTempId(),
+                        criterionId: criterion.id,
+                        value: weights.length === 0 ? WeightValue.MAX : WeightValue.MIN,
+                      })
+                    }
+                    disabled={weights.some((w) => w.criterionId === criterion.id)}
+                  >
+                    {criterion.name}
+                  </DropdownMenuItem>
+                ))}
+              </>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
