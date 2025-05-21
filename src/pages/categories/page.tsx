@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { Edit3 } from 'lucide-react';
+import { Edit3, Plus } from 'lucide-react';
 import { Link } from 'react-router';
 
 import { Button } from '@/components/atoms/button';
-import { H2 } from '@/components/atoms/typography/h2';
 import { H4 } from '@/components/atoms/typography/h4';
 import { useModules } from '@/components/context/ModulesProvider';
 import { Query } from '@/components/Query';
@@ -21,8 +20,18 @@ export function CategoriesPage() {
   });
 
   return (
-    <>
-      <H2>Categories</H2>
+    <div className='w-100'>
+      <div className='flex items-center justify-between border-b pb-2'>
+        <h3 className='scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
+          Categories
+        </h3>
+
+        <Button type='button' className='self-end' asChild>
+          <Link to='/new'>
+            <Plus />
+          </Link>
+        </Button>
+      </div>
       <Query isLoading={isLoading} error={error} data={data}>
         {(categories) => (
           <ul className='mt-3'>
@@ -39,6 +48,6 @@ export function CategoriesPage() {
           </ul>
         )}
       </Query>
-    </>
+    </div>
   );
 }
