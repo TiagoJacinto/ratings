@@ -36,8 +36,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu';
 import { usePagination } from '@/hooks/usePagination';
-
-import { type FormSchema } from './form.view';
+import { type FormSchema } from '@/view/form.schema';
 
 type AlternativesFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
