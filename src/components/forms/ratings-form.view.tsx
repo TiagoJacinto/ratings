@@ -122,7 +122,7 @@ export function RatingsForm({ form }: RatingsFormProps) {
                       </Button>
                     </div>
                   </DialogTrigger>
-                  {index !== ratings.length - 1 && <hr />}
+                  {index !== paginatedRatings.length - 1 && <hr />}
                 </li>
               ))
             )}

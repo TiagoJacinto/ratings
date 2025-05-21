@@ -92,7 +92,7 @@ export function CriteriaForm({ form }: CriteriaFormProps) {
                     </Button>
                   </div>
                 </DialogTrigger>
-                {index !== criteria.length - 1 && <hr />}
+                {index !== paginatedCriteria.length - 1 && <hr />}
               </li>
             ))
           )}
