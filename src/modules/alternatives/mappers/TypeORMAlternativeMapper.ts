@@ -1,5 +1,6 @@
 import { Alternative as AlternativeModel } from '@/database/entities/Alternative';
 import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
+import { toTypeORMModelId } from '@/modules/shared/lib/toTypeORMModelId';
 
 import { Alternative } from '../domain/Alternative';
 import { TypeORMRatedCriterionMapper } from './TypeORMRatedCriterionMapper';
@@ -7,10 +8,8 @@ import { TypeORMAlternativeCategoryMapper } from './TypeORMAlternativeCategoryMa
 
 export class TypeORMAlternativeMapper {
   static toPersistence(alternative: Alternative) {
-    const id = alternative.id.toValue();
-
     return new AlternativeModel({
-      id: typeof id === 'number' ? id : undefined,
+      id: toTypeORMModelId(alternative.id),
       name: alternative.name,
       description: alternative.description,
       ratedCriteria: alternative.ratedCriteria?.map(TypeORMRatedCriterionMapper.toPersistence),

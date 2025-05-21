@@ -1,16 +1,15 @@
 import { Weight as WeightModel } from '@/database/entities/Weight';
 import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 import { TypeORMCriterionMapper } from '@/modules/alternatives/mappers/TypeORMCriterionMapper';
+import { toTypeORMModelId } from '@/modules/shared/lib/toTypeORMModelId';
 
 import { Weight } from '../domain/Weight';
 import { WeightValue } from '../domain/WeightValue';
 
 export class TypeORMWeightMapper {
   static toPersistence(weight: Weight) {
-    const id = weight.id.toValue();
-
     const model = new WeightModel({
-      id: typeof id === 'number' ? id : undefined,
+      id: toTypeORMModelId(weight.id),
       criterion: weight.criterion && TypeORMCriterionMapper.toPersistence(weight.criterion),
       value: weight.value.value,
     });

@@ -1,15 +1,14 @@
 import { Criterion as CriterionModel } from '@/database/entities/Criterion';
 import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
+import { toTypeORMModelId } from '@/modules/shared/lib/toTypeORMModelId';
 
 import { Criterion } from '../domain/Criterion';
 import { TypeORMAlternativeCategoryMapper } from './TypeORMAlternativeCategoryMapper';
 
 export class TypeORMCriterionMapper {
   static toPersistence(criterion: Criterion) {
-    const id = criterion.id.toValue();
-
     return new CriterionModel({
-      id: typeof id === 'number' ? id : undefined,
+      id: toTypeORMModelId(criterion.id),
       name: criterion.name,
       alternativeCategory:
         criterion.alternativeCategory &&

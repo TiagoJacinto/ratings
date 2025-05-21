@@ -5,6 +5,7 @@ import { Rating } from '@/modules/ratings/domain/Rating';
 import { Weight } from '@/modules/ratings/domain/Weight';
 import { WeightValue } from '@/modules/ratings/domain/WeightValue';
 import { type IdTracker } from '@/modules/shared/services/id-tracker/id-tracker';
+import { isTemporaryId } from '@/modules/shared/lib/isTemporaryId';
 
 import { type AlternativeCategoryRepository } from '../repositories/alternative-category/alternative-category.repository';
 import { AlternativeCategory } from '../domain/AlternativeCategory';
@@ -46,8 +47,6 @@ export type UpdateAlternativeCategoryDTO = {
 
 type Response = Result<number, Error>;
 
-const isTemporaryId = (id: number) => id < 0;
-
 export class UpdateAlternativeCategoryUseCase
   implements UseCase<UpdateAlternativeCategoryDTO, Response>
 {
@@ -64,22 +63,22 @@ export class UpdateAlternativeCategoryUseCase
 
     const idMap = new Map<number, number>();
 
-    const criteria = await Promise.all(
-      request.criteria.map(async (c) => {
-        const id = isTemporaryId(c.id) ? await this.idTracker.moveToNextId(Criterion.name) : c.id;
+    const criteria: Criterion[] = [];
+    for (const c of request.criteria) {
+      const id = isTemporaryId(c.id) ? await this.idTracker.moveToNextId(Criterion.name) : c.id;
+      idMap.set(c.id, id);
 
-        idMap.set(c.id, id);
-
-        return Criterion.create(
+      criteria.push(
+        Criterion.create(
           {
             name: c.name,
             alternativeCategory,
             description: c.description,
           },
           new UniqueEntityID(id),
-        );
-      }),
-    );
+        ),
+      );
+    }
 
     const alternatives = request.alternatives.map((alternative) => {
       return Alternative.create(

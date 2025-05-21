@@ -5,6 +5,7 @@ import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 import { Rating } from '@/modules/ratings/domain/Rating';
 import { Weight } from '@/modules/ratings/domain/Weight';
 import { WeightValue } from '@/modules/ratings/domain/WeightValue';
+import { isTemporaryId } from '@/modules/shared/lib/isTemporaryId';
 
 import { type AlternativeCategoryRepository } from '../repositories/alternative-category/alternative-category.repository';
 import { AlternativeCategory } from '../domain/AlternativeCategory';
@@ -44,8 +45,6 @@ export type CreateAlternativeCategoryDTO = {
 };
 
 type Response = Result<number, Error>;
-
-const isTemporaryId = (id: number) => id < 0;
 
 export class CreateAlternativeCategoryUseCase
   implements UseCase<CreateAlternativeCategoryDTO, Response>
