@@ -1,11 +1,12 @@
+import { useQuery } from '@tanstack/react-query';
+import { Edit3 } from 'lucide-react';
+import { Link } from 'react-router';
+
 import { Button } from '@/components/atoms/button';
 import { H2 } from '@/components/atoms/typography/h2';
 import { H4 } from '@/components/atoms/typography/h4';
 import { useModules } from '@/components/context/ModulesProvider';
 import { Query } from '@/components/Query';
-import { useQuery } from '@tanstack/react-query';
-import { Edit3 } from 'lucide-react';
-import { Link } from 'react-router';
 
 export function CategoriesPage() {
   const { alternatives } = useModules();
@@ -29,7 +30,7 @@ export function CategoriesPage() {
               <li key={category.name} className='flex items-center gap-3'>
                 <H4 className='text-lg text-neutral-700 uppercase'>{category.name}</H4>
                 <Button asChild>
-                  <Link to={`/categories/${category.id.toValue()}`}>
+                  <Link to={`/${category.id.toValue()}`}>
                     <Edit3 />
                   </Link>
                 </Button>

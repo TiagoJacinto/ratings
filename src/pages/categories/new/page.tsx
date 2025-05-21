@@ -1,6 +1,7 @@
-import { useModules } from '@/components/context/ModulesProvider';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
+
+import { useModules } from '@/components/context/ModulesProvider';
 import { type CreateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/create-alternative-category.use-case';
 
 import { CreateAlternativeCategoryForm } from './form.view';
@@ -24,7 +25,7 @@ export function CreateAlternativeCategoryPage() {
           return;
         }
 
-        await navigate(`/categories/${result.value}`);
+        await navigate(`/${result.value}`);
       }}
     />
   );
