@@ -4,7 +4,6 @@ import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 import { Rating } from '@/modules/ratings/domain/Rating';
 import { Weight } from '@/modules/ratings/domain/Weight';
 import { WeightValue } from '@/modules/ratings/domain/WeightValue';
-import { type IdTracker } from '@/modules/shared/services/id-tracker/id-tracker';
 import { isTemporaryId } from '@/modules/shared/lib/isTemporaryId';
 
 import { type AlternativeCategoryRepository } from '../repositories/alternative-category/alternative-category.repository';
@@ -13,6 +12,7 @@ import { Criterion } from '../domain/Criterion';
 import { RatedCriterion } from '../domain/RatedCriterion';
 import { RatedCriterionValue } from '../domain/RatedCriterionValue';
 import { Alternative } from '../domain/Alternative';
+import { type CriterionRepository } from '../repositories/criterion/criterion.repository';
 
 export type UpdateAlternativeCategoryDTO = {
   id: number;
@@ -52,7 +52,7 @@ export class UpdateAlternativeCategoryUseCase
 {
   constructor(
     private readonly alternativeCategoryRepository: AlternativeCategoryRepository,
-    private readonly idTracker: IdTracker,
+    private readonly criterionRepository: CriterionRepository,
   ) {}
 
   async execute(request: UpdateAlternativeCategoryDTO): Promise<Response> {
@@ -65,8 +65,16 @@ export class UpdateAlternativeCategoryUseCase
 
     const criteria: Criterion[] = [];
     for (const c of request.criteria) {
-      const id = isTemporaryId(c.id) ? await this.idTracker.moveToNextId(Criterion.name) : c.id;
-      idMap.set(c.id, id);
+      const id = await this.criterionRepository.save(
+        Criterion.create(
+          {
+            name: c.name,
+            alternativeCategory,
+            description: c.description,
+          },
+          new UniqueEntityID(isTemporaryId(c.id) ? undefined : c.id),
+        ),
+      );
 
       criteria.push(
         Criterion.create(
@@ -78,6 +86,8 @@ export class UpdateAlternativeCategoryUseCase
           new UniqueEntityID(id),
         ),
       );
+
+      idMap.set(c.id, id);
     }
 
     const alternatives = request.alternatives.map((alternative) => {

@@ -15,7 +15,6 @@ import { type AlternativeRepository } from '@/modules/alternatives/repositories/
 import { type RatedCriterionRepository } from '@/modules/alternatives/repositories/rated-criterion/rated-criterion.repository';
 import { TypeORMRatedCriterionRepository } from '@/modules/alternatives/repositories/rated-criterion/implementations/TypeORMRatedCriterionRepository';
 import { UpdateAlternativeCategoryUseCase } from '@/modules/alternatives/use-cases/update-alternative-category.use-case';
-import { TypeORMIdTracker } from '@/modules/shared/services/id-tracker/implementations/TypeORMIdTracker';
 
 import { useDb } from './DbProvider';
 
@@ -57,8 +56,6 @@ export function ModulesProvider({ children }: Props) {
     weightRepository = new TypeORMWeightRepository(orm),
     ratingRepository = new TypeORMRatingRepository(orm);
 
-  const idTracker = new TypeORMIdTracker(orm);
-
   return (
     <ModulesContext.Provider
       value={{
@@ -72,14 +69,13 @@ export function ModulesProvider({ children }: Props) {
           useCases: {
             createAlternativeCategory: new CreateAlternativeCategoryUseCase(
               alternativeCategoryRepository,
-              idTracker,
             ),
             getAlternativeCategoryById: new GetAlternativeCategoryByIdUseCase(
               alternativeCategoryRepository,
             ),
             updateAlternativeCategory: new UpdateAlternativeCategoryUseCase(
               alternativeCategoryRepository,
-              idTracker,
+              criterionRepository,
             ),
           },
         },
