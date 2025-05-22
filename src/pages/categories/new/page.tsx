@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 import { useModules } from '@/components/context/ModulesProvider';
 import { type CreateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/create-alternative-category.use-case';
@@ -22,6 +23,7 @@ export function CreateAlternativeCategoryPage() {
         const result = await mutateAsync(data);
 
         if (!result.isOk) {
+          toast.error("Couldn't create the alternative category");
           return;
         }
 

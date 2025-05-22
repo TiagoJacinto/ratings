@@ -3,7 +3,14 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useBeforeUnload, useSearchParams } from 'react-router';
 
 import { Button } from '@/components/atoms/button';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/atoms/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/atoms/form';
 import { Input } from '@/components/atoms/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/tabs';
 import { Textarea } from '@/components/atoms/textarea';
@@ -72,6 +79,7 @@ export function UpdateAlternativeCategoryForm({ defaultValues, onSubmit }: Props
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -84,6 +92,7 @@ export function UpdateAlternativeCategoryForm({ defaultValues, onSubmit }: Props
                   <FormControl>
                     <Textarea className='h-24' {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
