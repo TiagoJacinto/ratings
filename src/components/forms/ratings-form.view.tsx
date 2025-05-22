@@ -19,13 +19,6 @@ import { type Weight } from '@/view/domain/Weight';
 import * as Weights from '@/view/domain/Weights';
 import { WeightValue } from '@/view/domain/WeightValue';
 import { stateActionsOf } from '@/view/utils/stateActionsOf';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/atoms/dropdown-menu';
 import { stepBy } from '@/lib/utils';
 import { DataTable, DataTableColumnHeader } from '@/components/atoms/data-table';
 import { Switch } from '@/components/atoms/switch';
@@ -45,6 +38,8 @@ import {
   PaginationItem,
 } from '@/components/atoms/pagination';
 import { type FormSchema } from '@/view/form.schema';
+
+import { CriteriaDropdownMenu } from '../molecules/CriteriaDropdownMenu';
 
 type RatingsFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
@@ -302,60 +297,32 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
       </ul>
 
       <div className='mt-3.5 flex items-center justify-between'>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              type='button'
-              variant='secondary'
-              className='bg-gray-500 text-white hover:bg-gray-600'
-            >
-              Add Weight
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {criteria.length === 0 ? (
-              <h1 className='text-center text-sm'>No criteria defined</h1>
-            ) : (
-              <>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setWeights([
-                      ...weights,
-                      ...criteria
-                        .filter((criterion) => !weights.some((w) => w.criterionId === criterion.id))
-                        .map((criterion) => ({
-                          id: getNextTempId(),
-                          criterionId: criterion.id,
-                          value: 0,
-                        })),
-                    ])
-                  }
-                  disabled={criteria.every((criterion) =>
-                    weights.some((w) => w.criterionId === criterion.id),
-                  )}
-                >
-                  All
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                {criteria.map((criterion) => (
-                  <DropdownMenuItem
-                    key={criterion.id}
-                    onClick={() =>
-                      viewModel.actions.addNew({
-                        id: getNextTempId(),
-                        criterionId: criterion.id,
-                        value: weights.length === 0 ? WeightValue.MAX : WeightValue.MIN,
-                      })
-                    }
-                    disabled={weights.some((w) => w.criterionId === criterion.id)}
-                  >
-                    {criterion.name}
-                  </DropdownMenuItem>
-                ))}
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <CriteriaDropdownMenu
+          criteria={criteria}
+          isAllCriteriaSelected={criteria.every((criterion) =>
+            weights.some((w) => w.criterionId === criterion.id),
+          )}
+          isCriteriaSelected={(criterionId) => weights.some((w) => w.criterionId === criterionId)}
+          onAllCriteriaSelected={() =>
+            setWeights([
+              ...weights,
+              ...criteria
+                .filter((criterion) => !weights.some((w) => w.criterionId === criterion.id))
+                .map((criterion) => ({
+                  id: getNextTempId(),
+                  criterionId: criterion.id,
+                  value: 0,
+                })),
+            ])
+          }
+          onCriteriaSelected={(criterionId) =>
+            viewModel.actions.addNew({
+              id: getNextTempId(),
+              criterionId,
+              value: weights.length === 0 ? WeightValue.MAX : WeightValue.MIN,
+            })
+          }
+        />
 
         <Button type='button' variant='outline' onClick={() => viewModel.actions.fixTotal()}>
           Total is {viewModel.values.total.toFixed(WeightValue.MAX_FRACTION_DIGITS)} - Fix?

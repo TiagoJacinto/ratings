@@ -29,15 +29,10 @@ import { type RatedCriterion } from '@/view/domain/RatedCriterion';
 import { Slider } from '@/components/atoms/slider';
 import { RatedCriterionValue } from '@/view/domain/RatedCriterionValue';
 import { stepBy } from '@/lib/utils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/atoms/dropdown-menu';
 import { usePagination } from '@/hooks/usePagination';
 import { type FormSchema } from '@/view/form.schema';
+
+import { CriteriaDropdownMenu } from '../molecules/CriteriaDropdownMenu';
 
 type AlternativesFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
@@ -191,8 +186,8 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
       <ul className='space-y-4'>
         {ratedCriteria.map((ratedCriterion, index) => (
           <li key={ratedCriterion.id} className='weight-130 flex items-center justify-between'>
-            <div className='flex items-center justify-between gap-2'>
-              <span className='text-sm'>
+            <div className='flex w-[45%] items-center justify-between gap-2'>
+              <span className='overflow-x-hidden text-sm overflow-ellipsis whitespace-nowrap'>
                 {criteria.find((c) => c.id === ratedCriterion.criterionId)?.name}
               </span>
               <Button type='button' variant='destructive' onClick={() => remove(index)}>
@@ -227,62 +222,34 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
         ))}
       </ul>
       <div className='mt-3.5 flex items-center justify-between'>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              type='button'
-              variant='secondary'
-              className='bg-gray-500 text-white hover:bg-gray-600'
-            >
-              Add Rating
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {criteria.length === 0 ? (
-              <h1 className='text-center text-sm'>No criteria defined</h1>
-            ) : (
-              <>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setRatedCriteria([
-                      ...ratedCriteria,
-                      ...criteria
-                        .filter(
-                          (criterion) => !ratedCriteria.some((w) => w.criterionId === criterion.id),
-                        )
-                        .map((criterion) => ({
-                          id: getNextTempId(),
-                          criterionId: criterion.id,
-                          value: 0,
-                        })),
-                    ])
-                  }
-                  disabled={criteria.every((criterion) =>
-                    ratedCriteria.some((w) => w.criterionId === criterion.id),
-                  )}
-                >
-                  All
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                {criteria.map((criterion) => (
-                  <DropdownMenuItem
-                    key={criterion.id}
-                    onClick={() =>
-                      append({
-                        id: getNextTempId(),
-                        criterionId: criterion.id,
-                        value: 0,
-                      })
-                    }
-                    disabled={ratedCriteria.some((w) => w.criterionId === criterion.id)}
-                  >
-                    {criterion.name}
-                  </DropdownMenuItem>
-                ))}
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <CriteriaDropdownMenu
+          criteria={criteria}
+          isAllCriteriaSelected={criteria.every((criterion) =>
+            ratedCriteria.some((w) => w.criterionId === criterion.id),
+          )}
+          isCriteriaSelected={(criterionId) =>
+            ratedCriteria.some((w) => w.criterionId === criterionId)
+          }
+          onAllCriteriaSelected={() => {
+            setRatedCriteria([
+              ...ratedCriteria,
+              ...criteria
+                .filter((criterion) => !ratedCriteria.some((w) => w.criterionId === criterion.id))
+                .map((criterion) => ({
+                  id: getNextTempId(),
+                  criterionId: criterion.id,
+                  value: 0,
+                })),
+            ]);
+          }}
+          onCriteriaSelected={(criterionId) => {
+            append({
+              id: getNextTempId(),
+              criterionId,
+              value: 0,
+            });
+          }}
+        />
       </div>
     </>
   );
