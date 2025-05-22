@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 import type { Maybe } from '@/shared/core/Maybe';
 
@@ -15,6 +15,7 @@ type Props = {
   weights?: Weight[];
 };
 
+@Unique(['alternativeCategory', 'name'])
 @Entity({ name: 'ratings' })
 export class Rating {
   @PrimaryGeneratedColumn({ type: 'integer' })
