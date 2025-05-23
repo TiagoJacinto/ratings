@@ -15,6 +15,8 @@ import { type AlternativeRepository } from '@/modules/alternatives/repositories/
 import { type RatedCriterionRepository } from '@/modules/alternatives/repositories/rated-criterion/rated-criterion.repository';
 import { TypeORMRatedCriterionRepository } from '@/modules/alternatives/repositories/rated-criterion/implementations/TypeORMRatedCriterionRepository';
 import { UpdateAlternativeCategoryUseCase } from '@/modules/alternatives/use-cases/update-alternative-category.use-case';
+import { ImportAlternativeCategoryUseCase } from '@/modules/alternatives/use-cases/import-alternative-category.use-case';
+import { DeleteAlternativeCategoryByIdUseCase } from '@/modules/alternatives/use-cases/delete-alternative-category.use-case';
 
 import { useDb } from './DbProvider';
 
@@ -28,7 +30,9 @@ type ModulesContext = Readonly<{
     };
     useCases: {
       createAlternativeCategory: CreateAlternativeCategoryUseCase;
+      deleteAlternativeCategory: DeleteAlternativeCategoryByIdUseCase;
       getAlternativeCategoryById: GetAlternativeCategoryByIdUseCase;
+      importAlternativeCategory: ImportAlternativeCategoryUseCase;
       updateAlternativeCategory: UpdateAlternativeCategoryUseCase;
     };
   };
@@ -70,8 +74,15 @@ export function ModulesProvider({ children }: Props) {
             createAlternativeCategory: new CreateAlternativeCategoryUseCase(
               alternativeCategoryRepository,
             ),
+            deleteAlternativeCategory: new DeleteAlternativeCategoryByIdUseCase(
+              alternativeCategoryRepository,
+            ),
             getAlternativeCategoryById: new GetAlternativeCategoryByIdUseCase(
               alternativeCategoryRepository,
+            ),
+            importAlternativeCategory: new ImportAlternativeCategoryUseCase(
+              alternativeCategoryRepository,
+              criterionRepository,
             ),
             updateAlternativeCategory: new UpdateAlternativeCategoryUseCase(
               alternativeCategoryRepository,

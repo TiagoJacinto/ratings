@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { z } from 'zod';
 import { toast } from 'sonner';
 
 import { useModules } from '@/components/context/ModulesProvider';
 import { Query } from '@/components/Query';
 import { type UpdateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/update-alternative-category.use-case';
+import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category.use-case';
 
 import { UpdateAlternativeCategoryForm } from './form.view';
 
@@ -13,6 +14,8 @@ export function AlternativeCategoryPage() {
   const modules = useModules();
   const params = useParams();
   const id = z.number({ coerce: true }).parse(params.id);
+
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
@@ -72,6 +75,18 @@ export function AlternativeCategoryPage() {
     },
   });
 
+  const { mutate: deleteCategory } = useMutation({
+    mutationKey: ['deleteAlternativeCategory'],
+    mutationFn: (dto: DeleteAlternativeCategoryByIdDTO) =>
+      modules.alternatives.useCases.deleteAlternativeCategory.execute(dto),
+    onError: () => toast.error('Error deleting category'),
+    onSuccess: async () => {
+      toast.success('Category deleted successfully');
+
+      await navigate('/');
+    },
+  });
+
   const { mutateAsync } = useMutation({
     mutationFn: (rating: UpdateAlternativeCategoryDTO) =>
       modules.alternatives.useCases.updateAlternativeCategory.execute(rating),
@@ -86,6 +101,7 @@ export function AlternativeCategoryPage() {
       {(category) => (
         <UpdateAlternativeCategoryForm
           defaultValues={category}
+          onDelete={() => deleteCategory({ id })}
           onSubmit={async (data) => {
             const result = await mutateAsync({ id, ...data });
 

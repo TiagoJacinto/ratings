@@ -20,13 +20,15 @@ import { CriteriaForm } from '@/components/forms/criteria-form.view';
 import { RatingsForm } from '@/components/forms/ratings-form.view';
 import { AlternativesForm } from '@/components/forms/alternatives-form.view';
 import { type FormSchema, formSchema } from '@/view/form.schema';
+import { CategoryDeletionConfirmationDialog } from '@/components/sections/CategoryDeletionConfirmationDialog';
 
 type Props = Readonly<{
   defaultValues: Partial<FormSchema>;
   onSubmit: SubmitHandler<FormSchema>;
+  onDelete: () => void;
 }>;
 
-export function UpdateAlternativeCategoryForm({ defaultValues, onSubmit }: Props) {
+export function UpdateAlternativeCategoryForm({ defaultValues, onDelete, onSubmit }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useBeforeUnload((e) => {
@@ -50,7 +52,10 @@ export function UpdateAlternativeCategoryForm({ defaultValues, onSubmit }: Props
         <div className='flex items-center justify-between'>
           <H4>Update Alternative Category</H4>
 
-          <Button>Save</Button>
+          <div className='flex items-center gap-x-2'>
+            <CategoryDeletionConfirmationDialog onConfirm={onDelete} />
+            <Button>Save</Button>
+          </div>
         </div>
 
         <Tabs
