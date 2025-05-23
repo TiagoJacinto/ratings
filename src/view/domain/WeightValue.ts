@@ -1,4 +1,3 @@
-import { stepBy } from '@/lib/utils';
 import { z } from 'zod';
 
 export namespace WeightValue {
@@ -7,9 +6,5 @@ export namespace WeightValue {
   export const MAX_FRACTION_DIGITS = 1;
 }
 
-export const WeightValueSchema = z
-  .number()
-  .min(WeightValue.MIN)
-  .max(WeightValue.MAX)
-  .step(stepBy(WeightValue.MAX_FRACTION_DIGITS));
+export const WeightValueSchema = z.number().min(WeightValue.MIN).max(WeightValue.MAX);
 export type WeightValue = z.infer<typeof WeightValueSchema>;
