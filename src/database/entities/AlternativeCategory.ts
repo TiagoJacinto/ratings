@@ -6,6 +6,7 @@ import type { Maybe } from '@/shared/core/Maybe';
 import { Alternative } from './Alternative';
 import { Criterion } from './Criterion';
 import { Rating } from './Rating';
+import { oneToManyOptions } from '../constants';
 
 type Props = {
   id?: number;
@@ -27,19 +28,13 @@ export class AlternativeCategory {
   @Column({ nullable: true, type: 'text' })
   description: Maybe<string>;
 
-  @OneToMany(() => Criterion, (criterion) => criterion.alternativeCategory, {
-    cascade: true,
-  })
+  @OneToMany(() => Criterion, (criterion) => criterion.alternativeCategory, oneToManyOptions)
   criteria?: Criterion[];
 
-  @OneToMany(() => Alternative, (alternative) => alternative.alternativeCategory, {
-    cascade: true,
-  })
+  @OneToMany(() => Alternative, (alternative) => alternative.alternativeCategory, oneToManyOptions)
   alternatives?: Alternative[];
 
-  @OneToMany(() => Rating, (rating) => rating.alternativeCategory, {
-    cascade: true,
-  })
+  @OneToMany(() => Rating, (rating) => rating.alternativeCategory, oneToManyOptions)
   ratings?: Rating[];
 
   constructor(props: Props | undefined) {

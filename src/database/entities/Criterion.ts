@@ -5,7 +5,7 @@ import type { Maybe } from '@/shared/core/Maybe';
 
 import { RatedCriterion } from './RatedCriterion';
 import { AlternativeCategory } from './AlternativeCategory';
-import { manyToOneOptions } from '../constants';
+import { manyToOneOptions, oneToManyOptions } from '../constants';
 import { Weight } from './Weight';
 
 type Props = {
@@ -29,14 +29,10 @@ export class Criterion {
   @Column({ nullable: true, type: 'text' })
   description: Maybe<string>;
 
-  @OneToMany(() => RatedCriterion, (ratedCriterion) => ratedCriterion.criterion, {
-    cascade: true,
-  })
+  @OneToMany(() => RatedCriterion, (ratedCriterion) => ratedCriterion.criterion, oneToManyOptions)
   ratedCriteria?: RatedCriterion[];
 
-  @OneToMany(() => Weight, (weight) => weight.criterion, {
-    cascade: true,
-  })
+  @OneToMany(() => Weight, (weight) => weight.criterion, oneToManyOptions)
   weights?: Weight[];
 
   @ManyToOne(
