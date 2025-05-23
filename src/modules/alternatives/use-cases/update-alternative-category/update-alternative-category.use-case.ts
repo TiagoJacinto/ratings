@@ -69,7 +69,6 @@ export class UpdateAlternativeCategoryUseCase
         Criterion.create(
           {
             name: c.name,
-            alternativeCategory,
             description: c.description,
           },
           new UniqueEntityID(isTemporaryId(c.id) ? undefined : c.id),
@@ -80,7 +79,6 @@ export class UpdateAlternativeCategoryUseCase
         Criterion.create(
           {
             name: c.name,
-            alternativeCategory,
             description: c.description,
           },
           new UniqueEntityID(id),
@@ -94,14 +92,12 @@ export class UpdateAlternativeCategoryUseCase
       return Alternative.create(
         {
           name: alternative.name,
-          alternativeCategory,
           description: alternative.description,
           ratedCriteria: request.criteria.map((criterion) =>
             RatedCriterion.create({
               criterion: Criterion.create(
                 {
                   name: criterion.name,
-                  alternativeCategory,
                   description: criterion.description,
                 },
                 new UniqueEntityID(idMap.get(criterion.id)),
@@ -122,7 +118,6 @@ export class UpdateAlternativeCategoryUseCase
       return Rating.create(
         {
           name: rating.name,
-          alternativeCategory,
           description: rating.description,
           weights: rating.weights.map((w) => {
             const criterion = request.criteria.find((c) => c.id === w.criterionId)!;
@@ -132,7 +127,6 @@ export class UpdateAlternativeCategoryUseCase
                 criterion: Criterion.create(
                   {
                     name: criterion.name,
-                    alternativeCategory,
                     description: criterion.description,
                   },
                   new UniqueEntityID(idMap.get(criterion.id)),
