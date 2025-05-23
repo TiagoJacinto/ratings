@@ -5,8 +5,8 @@ import { toast } from 'sonner';
 
 import { useModules } from '@/components/context/ModulesProvider';
 import { Query } from '@/components/Query';
-import { type UpdateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/update-alternative-category.use-case';
-import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category.use-case';
+import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category-by-id/delete-alternative-category-by-id..use-case';
+import { type UpdateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/update-alternative-category/update-alternative-category.use-case';
 
 import { UpdateAlternativeCategoryForm } from './form.view';
 
@@ -22,8 +22,9 @@ export function AlternativeCategoryPage() {
   const { data, error, isLoading } = useQuery({
     queryKey: ['getAlternativeCategoryById'],
     queryFn: async () => {
-      const result = await modules.alternatives.useCases.getAlternativeCategoryById.execute({ id });
-      if (!result.isOk) throw result.error;
+      const category = await modules.alternatives.controllers.getAlternativeCategoryById.execute({
+        id,
+      });
 
       const criteria =
         await modules.alternatives.repositories.criterion.findManyByAlternativeCategoryId(id);
@@ -32,7 +33,7 @@ export function AlternativeCategoryPage() {
         await modules.alternatives.repositories.alternative.findManyByAlternativeCategoryId(id);
 
       return {
-        name: result.value.name,
+        name: category.name,
         alternatives: await Promise.all(
           alternatives.map(async (alternative) => ({
             id: alternative.id.toValue() as number,
@@ -54,7 +55,7 @@ export function AlternativeCategoryPage() {
           name: criterion.name,
           description: criterion.description,
         })),
-        description: result.value.description,
+        description: category.description,
         ratings: await Promise.all(
           ratings.map(async (rating) => ({
             id: rating.id.toValue() as number,
@@ -78,7 +79,7 @@ export function AlternativeCategoryPage() {
   const { mutate: deleteCategory } = useMutation({
     mutationKey: ['deleteAlternativeCategory'],
     mutationFn: (dto: DeleteAlternativeCategoryByIdDTO) =>
-      modules.alternatives.useCases.deleteAlternativeCategory.execute(dto),
+      modules.alternatives.controllers.deleteAlternativeCategory.execute(dto),
     onError: () => toast.error('Error deleting category'),
     onSuccess: async () => {
       toast.success('Category deleted successfully');
@@ -87,13 +88,15 @@ export function AlternativeCategoryPage() {
     },
   });
 
-  const { mutateAsync } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (rating: UpdateAlternativeCategoryDTO) =>
-      modules.alternatives.useCases.updateAlternativeCategory.execute(rating),
-    onSuccess: () =>
-      queryClient.invalidateQueries({
+      modules.alternatives.controllers.updateAlternativeCategory.execute(rating),
+    onSuccess: async () => {
+      toast('Category saved successfully');
+      await queryClient.invalidateQueries({
         queryKey: ['getAlternativeCategoryById'],
-      }),
+      });
+    },
   });
 
   return (
@@ -102,13 +105,7 @@ export function AlternativeCategoryPage() {
         <UpdateAlternativeCategoryForm
           defaultValues={category}
           onDelete={() => deleteCategory({ id })}
-          onSubmit={async (data) => {
-            const result = await mutateAsync({ id, ...data });
-
-            if (!result.isOk) return;
-
-            toast('Category saved successfully');
-          }}
+          onSubmit={async (data) => mutate({ id, ...data })}
         />
       )}
     </Query>

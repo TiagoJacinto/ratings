@@ -1,8 +1,8 @@
 import { type Result, err, ok } from '@/shared/core/Result';
 import { type UseCase } from '@/shared/core/UseCase';
 
-import { type AlternativeCategory } from '../domain/AlternativeCategory';
-import { type AlternativeCategoryRepository } from '../repositories/alternative-category/alternative-category.repository';
+import { type AlternativeCategory } from '../../domain/AlternativeCategory';
+import { type AlternativeCategoryRepository } from '../../repositories/alternative-category/alternative-category.repository';
 
 export type GetAlternativeCategoryByIdDTO = {
   id: number;

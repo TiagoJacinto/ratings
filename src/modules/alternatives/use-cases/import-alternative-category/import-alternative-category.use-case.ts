@@ -5,13 +5,13 @@ import { Rating } from '@/modules/ratings/domain/Rating';
 import { WeightValue } from '@/modules/ratings/domain/WeightValue';
 import { Weight } from '@/modules/ratings/domain/Weight';
 
-import { type AlternativeCategoryRepository } from '../repositories/alternative-category/alternative-category.repository';
-import { AlternativeCategory } from '../domain/AlternativeCategory';
-import { Alternative } from '../domain/Alternative';
-import { Criterion } from '../domain/Criterion';
-import { RatedCriterion } from '../domain/RatedCriterion';
-import { type CriterionRepository } from '../repositories/criterion/criterion.repository';
-import { RatedCriterionValue } from '../domain/RatedCriterionValue';
+import { type AlternativeCategoryRepository } from '../../repositories/alternative-category/alternative-category.repository';
+import { type CriterionRepository } from '../../repositories/criterion/criterion.repository';
+import { Criterion } from '../../domain/Criterion';
+import { Alternative } from '../../domain/Alternative';
+import { AlternativeCategory } from '../../domain/AlternativeCategory';
+import { RatedCriterion } from '../../domain/RatedCriterion';
+import { RatedCriterionValue } from '../../domain/RatedCriterionValue';
 
 export type ImportAlternativeCategoryDTO = {
   name: string;

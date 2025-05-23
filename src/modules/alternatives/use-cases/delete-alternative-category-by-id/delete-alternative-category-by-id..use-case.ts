@@ -1,7 +1,7 @@
 import { type Result, err, ok } from '@/shared/core/Result';
 import { type UseCase } from '@/shared/core/UseCase';
 
-import { type AlternativeCategoryRepository } from '../repositories/alternative-category/alternative-category.repository';
+import { type AlternativeCategoryRepository } from '../../repositories/alternative-category/alternative-category.repository';
 
 export type DeleteAlternativeCategoryByIdDTO = {
   id: number;

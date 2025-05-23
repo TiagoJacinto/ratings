@@ -26,15 +26,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/atoms/form';
-import { type ImportAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/import-alternative-category.use-case';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/atoms/accordion';
-import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category.use-case';
 import { CategoryDeletionConfirmationDialog } from '@/components/sections/CategoryDeletionConfirmationDialog';
+import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category-by-id/delete-alternative-category-by-id..use-case';
+import { type ImportAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/import-alternative-category/import-alternative-category.use-case';
 
 const ImportedCategorySchema = z.object({
   name: z.string().min(1, {
@@ -98,7 +98,7 @@ export function CategoriesPage() {
   const { mutate: deleteCategory } = useMutation({
     mutationKey: ['deleteAlternativeCategory'],
     mutationFn: (dto: DeleteAlternativeCategoryByIdDTO) =>
-      alternatives.useCases.deleteAlternativeCategory.execute(dto),
+      alternatives.controllers.deleteAlternativeCategory.execute(dto),
     onError: () => toast.error("Couldn't delete the category"),
     onSuccess: async () => {
       toast.success('Category deleted successfully');
@@ -109,9 +109,11 @@ export function CategoriesPage() {
     },
   });
 
-  const { mutateAsync } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (dto: ImportAlternativeCategoryDTO) =>
-      alternatives.useCases.importAlternativeCategory.execute(dto),
+      alternatives.controllers.importAlternativeCategory.execute(dto),
+    onError: () => toast.error("Couldn't import the category"),
+    onSuccess: (id) => navigate(`/${id}`),
   });
 
   const { data, error, isLoading } = useQuery({
@@ -141,18 +143,7 @@ export function CategoriesPage() {
                 <DialogTitle>Import category</DialogTitle>
               </DialogHeader>
 
-              <ImportCategoryForm
-                handleImport={async (dto) => {
-                  const result = await mutateAsync(dto);
-
-                  if (!result.isOk) {
-                    toast.error("Couldn't import the category");
-                    return;
-                  }
-
-                  await navigate(`/${result.value}`);
-                }}
-              />
+              <ImportCategoryForm handleImport={mutate} />
             </DialogContent>
           </Dialog>
 

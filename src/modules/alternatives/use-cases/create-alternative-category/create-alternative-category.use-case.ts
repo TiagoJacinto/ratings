@@ -2,8 +2,8 @@ import { type Result, err, ok } from '@/shared/core/Result';
 import { type UseCase } from '@/shared/core/UseCase';
 import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 
-import { type AlternativeCategoryRepository } from '../repositories/alternative-category/alternative-category.repository';
-import { AlternativeCategory } from '../domain/AlternativeCategory';
+import { type AlternativeCategoryRepository } from '../../repositories/alternative-category/alternative-category.repository';
+import { AlternativeCategory } from '../../domain/AlternativeCategory';
 
 export type CreateAlternativeCategoryDTO = {
   name: string;
