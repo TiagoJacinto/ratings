@@ -19,11 +19,14 @@ export class TypeORMAlternativeCategoryMapper {
     });
   }
 
-  static toDomain(alternativeCategory: AlternativeCategoryModel) {
+  static toDomain(alternativeCategory: AlternativeCategoryModel): AlternativeCategory {
     return AlternativeCategory.create(
       {
         name: alternativeCategory.name,
+        alternatives: alternativeCategory.alternatives?.map(TypeORMAlternativeMapper.toDomain),
+        criteria: alternativeCategory.criteria?.map(TypeORMCriterionMapper.toDomain),
         description: alternativeCategory.description ?? undefined,
+        ratings: alternativeCategory.ratings?.map(TypeORMRatingMapper.toDomain),
       },
       new UniqueEntityID(alternativeCategory.id),
     );

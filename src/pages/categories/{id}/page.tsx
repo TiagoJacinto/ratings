@@ -42,10 +42,11 @@ export function AlternativeCategoryPage() {
             ratedCriteria: (
               await modules.alternatives.repositories.ratedCriterion.findManyByAlternativeId(
                 alternative.id.toValue() as number,
+                { criterion: true },
               )
             ).map((ratedCriterion) => ({
               id: ratedCriterion.id.toValue() as number,
-              criterionId: ratedCriterion.criterion!.id.toValue() as number,
+              criterionId: ratedCriterion.criterion.id.toValue() as number,
               value: ratedCriterion.value.value,
             })),
           })),
@@ -64,10 +65,11 @@ export function AlternativeCategoryPage() {
             weights: (
               await modules.ratings.repositories.weight.findManyByRatingId(
                 rating.id.toValue() as number,
+                { criterion: true },
               )
             ).map((weight) => ({
               id: weight.id.toValue() as number,
-              criterionId: weight.criterion!.id.toValue() as number,
+              criterionId: weight.criterion.id.toValue() as number,
               value: weight.value.value,
             })),
           })),

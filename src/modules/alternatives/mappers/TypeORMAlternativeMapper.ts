@@ -24,6 +24,7 @@ export class TypeORMAlternativeMapper {
           alternative.alternativeCategory &&
           TypeORMAlternativeCategoryMapper.toDomain(alternative.alternativeCategory),
         description: alternative.description ?? undefined,
+        ratedCriteria: alternative.ratedCriteria?.map(TypeORMRatedCriterionMapper.toDomain),
       },
       new UniqueEntityID(alternative.id),
     );
