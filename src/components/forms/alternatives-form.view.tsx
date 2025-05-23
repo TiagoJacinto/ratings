@@ -7,9 +7,6 @@ import { useTemporaryId } from '@/hooks/useTemporaryId';
 import { arrayActionsOf } from '@/view/utils/arrayActionsOf';
 import {
   Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -33,6 +30,8 @@ import { usePagination } from '@/hooks/usePagination';
 import { type FormSchema } from '@/view/form.schema';
 
 import { CriteriaDropdownMenu } from '../molecules/CriteriaDropdownMenu';
+import { SlidersDialog } from '../sections/SlidersDialog';
+import { CriterionName } from '../molecules/CriterionName';
 
 type AlternativesFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
@@ -122,7 +121,7 @@ export function AlternativesForm({ form }: AlternativesFormProps) {
         </Pagination>
       </div>
 
-      <DialogContent scrollable className='top-[35%] sm:max-w-[600px]' aria-describedby=''>
+      <SlidersDialog>
         <DialogHeader>
           <DialogTitle>Edit Alternative</DialogTitle>
         </DialogHeader>
@@ -152,16 +151,11 @@ export function AlternativesForm({ form }: AlternativesFormProps) {
         />
 
         <RatedCriteriaForm alternativeIndex={index} form={form} />
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type='button'>Close</Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
+      </SlidersDialog>
     </Dialog>
   );
 }
+
 
 type RatedCriteriaFormProps = Readonly<{
   alternativeIndex: number;
@@ -185,11 +179,11 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
     <>
       <ul className='space-y-4'>
         {ratedCriteria.map((ratedCriterion, index) => (
-          <li key={ratedCriterion.id} className='weight-130 flex items-center justify-between'>
-            <div className='flex w-[45%] items-center justify-between gap-2'>
-              <span className='overflow-x-hidden text-sm overflow-ellipsis whitespace-nowrap'>
+          <li key={ratedCriterion.id} className='flex items-center justify-between'>
+            <div className='flex w-64 items-center justify-between gap-2'>
+              <CriterionName>
                 {criteria.find((c) => c.id === ratedCriterion.criterionId)?.name}
-              </span>
+              </CriterionName>
               <Button type='button' variant='destructive' onClick={() => remove(index)}>
                 <Trash2 />
               </Button>
@@ -254,3 +248,4 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
     </>
   );
 }
+

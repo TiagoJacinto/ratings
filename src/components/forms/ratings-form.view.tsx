@@ -5,9 +5,6 @@ import { type ColumnDef } from '@tanstack/react-table';
 
 import {
   Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogPortal,
   DialogTitle,
@@ -40,6 +37,8 @@ import {
 import { type FormSchema } from '@/view/form.schema';
 
 import { CriteriaDropdownMenu } from '../molecules/CriteriaDropdownMenu';
+import { SlidersDialog } from '../sections/SlidersDialog';
+import { CriterionName } from '../molecules/CriterionName';
 
 type RatingsFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
@@ -136,9 +135,8 @@ export function RatingsForm({ form }: RatingsFormProps) {
           </PaginationContent>
         </Pagination>
       </div>
-
       <DialogPortal>
-        <DialogContent scrollable className='sm:max-w-[600px]' aria-describedby=''>
+        <SlidersDialog>
           <DialogHeader>
             <DialogTitle>Edit Rating</DialogTitle>
           </DialogHeader>
@@ -167,13 +165,7 @@ export function RatingsForm({ form }: RatingsFormProps) {
             )}
           />
           <WeightsForm form={form} ratingIndex={index} />
-
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type='button'>Close</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
+        </SlidersDialog>
       </DialogPortal>
     </Dialog>
   );
@@ -248,11 +240,11 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
     <>
       <ul className='space-y-4'>
         {weights.map((weight, index) => (
-          <li key={weight.id} className='weight-130 flex items-center justify-between'>
-            <div className='flex items-center justify-between gap-2'>
-              <span className='text-sm'>
+          <li key={weight.id} className='flex items-center justify-between gap-x-2'>
+            <div className='flex w-64 items-center justify-between gap-2'>
+              <CriterionName>
                 {criteria.find((c) => c.id === weight.criterionId)?.name}
-              </span>
+              </CriterionName>
 
               <Button
                 type='button'
