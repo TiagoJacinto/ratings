@@ -9,6 +9,10 @@ export class Ok<T> {
     this.value = value;
   }
 
+  getOrThrow() {
+    return this.value;
+  }
+
   get unwrapped() {
     return this.value;
   }
@@ -20,6 +24,11 @@ export class Err<E> {
 
   constructor(error: E) {
     this.error = error;
+  }
+
+  getOrThrow(): never {
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
+    throw this.error;
   }
 
   get unwrapped(): never {
