@@ -93,6 +93,7 @@ export function AlternativeCategoryPage() {
   const { mutate } = useMutation({
     mutationFn: (rating: UpdateAlternativeCategoryDTO) =>
       modules.alternatives.controllers.updateAlternativeCategory.execute(rating),
+    onError: () => toast.error('Error saving category'),
     onSuccess: async () => {
       toast('Category saved successfully');
       await queryClient.invalidateQueries({
