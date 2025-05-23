@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/atoms/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/atoms/tabs';
 import { Textarea } from '@/components/atoms/textarea';
-import { useEffectAfterMount } from '@/hooks/useEffectAfterMount';
 import { H4 } from '@/components/atoms/typography/h4';
 import { CriteriaForm } from '@/components/forms/criteria-form.view';
 import { RatingsForm } from '@/components/forms/ratings-form.view';
@@ -23,12 +22,12 @@ import { type FormSchema, formSchema } from '@/view/form.schema';
 import { CategoryDeletionConfirmationDialog } from '@/components/sections/CategoryDeletionConfirmationDialog';
 
 type Props = Readonly<{
-  defaultValues: Partial<FormSchema>;
   onSubmit: SubmitHandler<FormSchema>;
+  values: FormSchema;
   onDelete: () => void;
 }>;
 
-export function UpdateAlternativeCategoryForm({ defaultValues, onDelete, onSubmit }: Props) {
+export function UpdateAlternativeCategoryForm({ onDelete, onSubmit, values }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useBeforeUnload((e) => {
@@ -38,13 +37,9 @@ export function UpdateAlternativeCategoryForm({ defaultValues, onDelete, onSubmi
   });
 
   const form = useForm<FormSchema>({
-    defaultValues,
     resolver: zodResolver(formSchema),
+    values,
   });
-
-  useEffectAfterMount(() => {
-    form.reset(defaultValues);
-  }, [form, defaultValues]);
 
   return (
     <Form {...form}>

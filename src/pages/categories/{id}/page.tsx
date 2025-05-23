@@ -105,9 +105,9 @@ export function AlternativeCategoryPage() {
     <Query isLoading={isLoading} error={error} data={data}>
       {(category) => (
         <UpdateAlternativeCategoryForm
-          defaultValues={category}
+          values={category}
           onDelete={() => deleteCategory({ id })}
-          onSubmit={async (data) => mutate({ id, ...data })}
+          onSubmit={(data) => mutate({ id, ...data })}
         />
       )}
     </Query>
