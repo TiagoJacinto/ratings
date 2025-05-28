@@ -126,8 +126,8 @@ export function CategoriesPage() {
   });
 
   return (
-    <div className='w-100'>
-      <div className='flex items-center justify-between border-b pb-2'>
+    <div className='mx-auto w-full max-w-6xl p-6'>
+      <div className='mb-5 flex items-center justify-between border-b pb-2'>
         <h3 className='scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
           Categories
         </h3>
@@ -156,7 +156,7 @@ export function CategoriesPage() {
       </div>
       <Query isLoading={isLoading} error={error} data={data}>
         {(categories) => (
-          <ul className='mt-3 space-y-3'>
+          <ul className='space-y-3'>
             {categories.map((category) => (
               <li key={category.name} className='flex items-center justify-between'>
                 <H4 className='text-lg text-neutral-700 uppercase'>{category.name}</H4>
