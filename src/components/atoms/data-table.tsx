@@ -59,14 +59,12 @@ type DataTableProps<TData, TValue> = Readonly<{
   pagination?: {
     size?: 'sm' | 'default';
   };
-}> &
-  React.ComponentProps<'div'>;
+}>;
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pagination,
-  ...props
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -93,7 +91,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className='flex flex-col gap-y-2' {...props}>
+    <div className='flex flex-col gap-y-2'>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant='outline' className='ml-auto'>
