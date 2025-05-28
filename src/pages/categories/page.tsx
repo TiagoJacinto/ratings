@@ -126,7 +126,7 @@ export function CategoriesPage() {
   });
 
   return (
-    <div className='mx-auto w-full max-w-6xl p-6'>
+    <div className='mx-auto w-full max-w-4xl p-6'>
       <div className='mb-5 flex items-center justify-between border-b pb-2'>
         <h3 className='scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
           Categories
