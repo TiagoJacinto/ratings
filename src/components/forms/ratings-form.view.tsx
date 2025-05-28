@@ -68,8 +68,8 @@ export function RatingsForm({ form }: RatingsFormProps) {
 
   return (
     <Dialog>
-      <div className='flex flex-col'>
-        <div className='mb-2 flex items-center space-x-2 self-end'>
+      <div className='flex flex-col space-y-4'>
+        <div className='flex items-center space-x-2 self-end'>
           <div className='flex items-center space-x-2'>
             <Switch checked={showTable} onCheckedChange={setShowTable} id='view-mode' />
             <Label htmlFor='view-mode'>Show Table</Label>
@@ -91,51 +91,53 @@ export function RatingsForm({ form }: RatingsFormProps) {
           </DialogTrigger>
         </div>
 
-        {showTable ? (
-          <RatingsTable form={form} />
+        {ratings.length === 0 ? (
+          <h1 className='text-muted-foreground py-8 text-center'>No rating added yet.</h1>
         ) : (
           <>
-            <ul className='mt-2 mb-2 flex flex-col rounded-md px-2 py-1.5 outline'>
-              {ratings.length === 0 ? (
-                <h1 className='text-center text-sm'>No Data</h1>
-              ) : (
-                paginatedRatings.map((field, index) => (
-                  <li key={field.id}>
-                    <DialogTrigger asChild onClick={() => setIndex(index)}>
-                      <div className='hover:bg-accent hover:text-accent-foreground flex items-center justify-between gap-3 rounded-md px-3.5 py-2 hover:cursor-pointer hover:underline hover:underline-offset-3'>
-                        <span className='text-sm'>{field.name}</span>
+            {showTable ? (
+              <RatingsTable form={form} />
+            ) : (
+              <>
+                <ul className='mt-2 mb-2 flex flex-col rounded-md px-2 py-1.5 outline'>
+                  {paginatedRatings.map((field, index) => (
+                    <li key={field.id}>
+                      <DialogTrigger asChild onClick={() => setIndex(index)}>
+                        <div className='hover:bg-accent hover:text-accent-foreground flex items-center justify-between gap-3 rounded-md px-3.5 py-2 hover:cursor-pointer hover:underline hover:underline-offset-3'>
+                          <span className='text-sm'>{field.name}</span>
 
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            remove(index);
-                          }}
-                          type='button'
-                          variant='destructive'
-                        >
-                          <Trash2 />
-                        </Button>
-                      </div>
-                    </DialogTrigger>
-                    {index !== paginatedRatings.length - 1 && <hr />}
-                  </li>
-                ))
-              )}
-            </ul>
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationButtonPrevious
-                    disabled={isFirstPage}
-                    onClick={() => goToPreviousPage()}
-                  />
-                </PaginationItem>
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              remove(index);
+                            }}
+                            type='button'
+                            variant='destructive'
+                          >
+                            <Trash2 />
+                          </Button>
+                        </div>
+                      </DialogTrigger>
+                      {index !== paginatedRatings.length - 1 && <hr />}
+                    </li>
+                  ))}
+                </ul>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationButtonPrevious
+                        disabled={isFirstPage}
+                        onClick={() => goToPreviousPage()}
+                      />
+                    </PaginationItem>
 
-                <PaginationItem>
-                  <PaginationButtonNext disabled={isLastPage} onClick={() => goToNextPage()} />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+                    <PaginationItem>
+                      <PaginationButtonNext disabled={isLastPage} onClick={() => goToNextPage()} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </>
+            )}
           </>
         )}
       </div>
@@ -227,7 +229,6 @@ function RatingsTable({ form }: RatingViewProps) {
       pagination={{
         size: 'sm',
       }}
-      className='w-[75vw]'
     />
   );
 }

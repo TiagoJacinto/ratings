@@ -5,12 +5,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { stateActionsOf } from '@/view/utils/stateActionsOf';
 import { useTemporaryId } from '@/hooks/useTemporaryId';
 import { arrayActionsOf } from '@/view/utils/arrayActionsOf';
-import {
-  Dialog,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/atoms/dialog';
+import { Dialog, DialogHeader, DialogTitle, DialogTrigger } from '@/components/atoms/dialog';
 import { Button } from '@/components/atoms/button';
 import {
   Pagination,
@@ -62,7 +57,7 @@ export function AlternativesForm({ form }: AlternativesFormProps) {
 
   return (
     <Dialog>
-      <div className='flex flex-col'>
+      <div className='flex flex-col space-y-4'>
         <DialogTrigger asChild onClick={() => setIndex(alternatives.length)}>
           <Button
             onClick={() =>
@@ -80,45 +75,49 @@ export function AlternativesForm({ form }: AlternativesFormProps) {
           </Button>
         </DialogTrigger>
 
-        <ul className='mt-2 mb-2 flex flex-col rounded-md px-2 py-1.5 outline'>
-          {alternatives.length === 0 ? (
-            <h1 className='text-center text-sm'>No Data</h1>
-          ) : (
-            paginatedAlternatives.map((field, index) => (
-              <li key={field.id}>
-                <DialogTrigger asChild onClick={() => setIndex(index)}>
-                  <div className='hover:bg-accent hover:text-accent-foreground flex items-center justify-between gap-3 rounded-md px-3.5 py-2 hover:cursor-pointer hover:underline hover:underline-offset-3'>
-                    <span className='text-sm'>{field.name}</span>
+        {alternatives.length === 0 ? (
+          <h1 className='text-muted-foreground py-8 text-center'>No alternatives added yet.</h1>
+        ) : (
+          <>
+            <ul className='flex flex-col rounded-md px-2 py-1.5 outline'>
+              {paginatedAlternatives.map((field, index) => (
+                <li key={field.id}>
+                  <DialogTrigger asChild onClick={() => setIndex(index)}>
+                    <div className='hover:bg-accent hover:text-accent-foreground flex items-center justify-between gap-3 rounded-md px-3.5 py-2 hover:cursor-pointer hover:underline hover:underline-offset-3'>
+                      <span className='text-sm'>{field.name}</span>
 
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        remove(index);
-                      }}
-                      type='button'
-                      variant='destructive'
-                    >
-                      <Trash2 />
-                    </Button>
-                  </div>
-                </DialogTrigger>
-                {index !== paginatedAlternatives.length - 1 && <hr />}
-              </li>
-            ))
-          )}
-        </ul>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          remove(index);
+                        }}
+                        type='button'
+                        variant='destructive'
+                      >
+                        <Trash2 />
+                      </Button>
+                    </div>
+                  </DialogTrigger>
+                  {index !== paginatedAlternatives.length - 1 && <hr />}
+                </li>
+              ))}
+            </ul>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationButtonPrevious
+                    disabled={isFirstPage}
+                    onClick={() => goToPreviousPage()}
+                  />
+                </PaginationItem>
 
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationButtonPrevious disabled={isFirstPage} onClick={() => goToPreviousPage()} />
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationButtonNext disabled={isLastPage} onClick={() => goToNextPage()} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+                <PaginationItem>
+                  <PaginationButtonNext disabled={isLastPage} onClick={() => goToNextPage()} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </>
+        )}
       </div>
 
       <SlidersDialog>
@@ -155,7 +154,6 @@ export function AlternativesForm({ form }: AlternativesFormProps) {
     </Dialog>
   );
 }
-
 
 type RatedCriteriaFormProps = Readonly<{
   alternativeIndex: number;
@@ -248,4 +246,3 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
     </>
   );
 }
-
