@@ -23,7 +23,7 @@ import { GetAlternativeCategoryController } from '@/modules/alternatives/use-cas
 import { ImportAlternativeCategoryController } from '@/modules/alternatives/use-cases/import-alternative-category/import-alternative-category.controller';
 import { UpdateAlternativeCategoryController } from '@/modules/alternatives/use-cases/update-alternative-category/update-alternative-category.controller';
 
-import { useDb } from './DbProvider';
+import { useStorage } from './StorageProvider';
 
 type ModulesContext = Readonly<{
   alternatives: {
@@ -56,7 +56,7 @@ type Props = Readonly<{
 }>;
 
 export function ModulesProvider({ children }: Props) {
-  const { orm } = useDb();
+  const orm = useStorage();
 
   const repositories = {
     alternative: new TypeORMAlternativeRepository(orm),

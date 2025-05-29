@@ -35,6 +35,7 @@ import {
 import { CategoryDeletionConfirmationDialog } from '@/components/sections/CategoryDeletionConfirmationDialog';
 import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category-by-id/delete-alternative-category-by-id..use-case';
 import { type ImportAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/import-alternative-category/import-alternative-category.use-case';
+import { Card, CardContent } from '@/components/atoms/card';
 
 const ImportedCategorySchema = z.object({
   name: z.string().min(1, {
@@ -126,7 +127,7 @@ export function CategoriesPage() {
   });
 
   return (
-    <div className='mx-auto w-full max-w-4xl p-6'>
+    <div className='mx-auto w-full max-w-4xl p-10'>
       <div className='mb-5 flex items-center justify-between border-b pb-2'>
         <h3 className='scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
           Categories
@@ -155,25 +156,44 @@ export function CategoriesPage() {
         </div>
       </div>
       <Query isLoading={isLoading} error={error} data={data}>
-        {(categories) => (
-          <ul className='space-y-3'>
-            {categories.map((category) => (
-              <li key={category.name} className='flex items-center justify-between'>
-                <H4 className='text-lg text-neutral-700 uppercase'>{category.name}</H4>
-                <div className='flex items-center gap-2'>
-                  <Button asChild>
-                    <Link to={`/${category.id.toValue()}`}>
-                      <Edit3 />
-                    </Link>
-                  </Button>
-                  <CategoryDeletionConfirmationDialog
-                    onConfirm={() => deleteCategory({ id: category.id.toValue() as number })}
-                  />
+        {(categories) =>
+          categories.length === 0 ? (
+            <Card>
+              <CardContent className='flex flex-col items-center justify-center py-12 sm:py-16'>
+                <div className='max-w-md text-center'>
+                  <h3 className='mb-2 text-lg font-semibold'>No categories yet</h3>
+                  <p className='text-muted-foreground mb-4 text-sm sm:text-base'>
+                    Get started by creating your first evaluation category
+                  </p>
+                  <Link to='/new'>
+                    <Button className='w-full sm:w-auto'>
+                      <Plus className='mr-2 h-4 w-4' />
+                      Create Category
+                    </Button>
+                  </Link>
                 </div>
-              </li>
-            ))}
-          </ul>
-        )}
+              </CardContent>
+            </Card>
+          ) : (
+            <ul className='space-y-3'>
+              {categories.map((category) => (
+                <li key={category.name} className='flex items-center justify-between'>
+                  <H4 className='text-lg text-neutral-700 uppercase'>{category.name}</H4>
+                  <div className='flex items-center gap-2'>
+                    <Button asChild>
+                      <Link to={`/${category.id.toValue()}`}>
+                        <Edit3 />
+                      </Link>
+                    </Button>
+                    <CategoryDeletionConfirmationDialog
+                      onConfirm={() => deleteCategory({ id: category.id.toValue() as number })}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )
+        }
       </Query>
     </div>
   );

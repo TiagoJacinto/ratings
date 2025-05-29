@@ -31,7 +31,7 @@ export function UpdateAlternativeCategoryForm({ onDelete, onSubmit, values }: Pr
   });
 
   return (
-    <div className='mx-auto w-full max-w-4xl p-6'>
+    <div className='mx-auto w-full max-w-4xl p-10'>
       <H3 className='mb-4'>Update Alternative Category</H3>
 
       <Form {...form}>
