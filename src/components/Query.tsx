@@ -1,19 +1,21 @@
 import { type JSX } from 'react';
 
+import { type Maybe } from '@/shared/core/Maybe';
+
 type Props<TData> = Readonly<
   | {
       checkData?: true;
-      data: TData | undefined;
+      data: Maybe<TData>;
       error: unknown;
       isLoading: boolean;
-      children: (data: TData) => JSX.Element;
+      children: (data: NonNullable<TData>) => JSX.Element;
     }
   | {
       checkData: false;
-      data: TData | undefined;
+      data: Maybe<TData>;
       error: unknown;
       isLoading: boolean;
-      children: (data: TData | undefined) => JSX.Element;
+      children: (data: Maybe<TData>) => JSX.Element;
     }
 >;
 
@@ -32,5 +34,5 @@ export function Query<TData>({ checkData, children, data, error, isLoading }: Pr
   }
   if (checkData && !data) return <p>Data not found</p>;
 
-  return children(data as TData);
+  return children(data as NonNullable<TData>);
 }
