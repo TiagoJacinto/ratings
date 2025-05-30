@@ -8,17 +8,18 @@ type Props = Readonly<{
   components: {
     Slider: React.JSX.Element;
   };
-  value: string | number;
+  maxFractionDigits: number;
+  value: number;
   onDelete: () => void;
 }>;
 
-export function CriterionItem({ name, components, onDelete, value }: Props) {
+export function CriterionItem({ name, components, maxFractionDigits, onDelete, value }: Props) {
   return (
-    <li className='flex items-center justify-between gap-2 rounded-lg border p-2 max-sm:flex-col sm:items-center'>
+    <li className='flex items-center justify-between gap-2 rounded-lg border p-2 max-sm:flex-col'>
       <CriterionName>{name}</CriterionName>
 
       <div className='flex items-center space-x-3'>
-        <span>{value}</span>
+        <span>{value.toFixed(maxFractionDigits)}</span>
 
         {components.Slider}
 

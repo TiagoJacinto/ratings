@@ -182,6 +182,7 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
             name={criteria.find((c) => c.id === ratedCriterion.criterionId)?.name}
             onDelete={() => remove(index)}
             value={ratedCriterion.value}
+            maxFractionDigits={RatedCriterionValue.MAX_FRACTION_DIGITS}
             components={{
               Slider: (
                 <FormField

@@ -263,7 +263,8 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
             key={weight.id}
             name={criteria.find((c) => c.id === weight.criterionId)?.name}
             onDelete={() => viewModel.actions.remove(index)}
-            value={weight.value.toFixed(WeightValue.MAX_FRACTION_DIGITS)}
+            value={weight.value}
+            maxFractionDigits={WeightValue.MAX_FRACTION_DIGITS}
             components={{
               Slider: (
                 <FormField
