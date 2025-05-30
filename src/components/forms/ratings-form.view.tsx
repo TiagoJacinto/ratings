@@ -38,7 +38,7 @@ import { type FormSchema } from '@/view/form.schema';
 
 import { CriteriaDropdownMenu } from '../molecules/CriteriaDropdownMenu';
 import { SlidersDialog } from '../sections/SlidersDialog';
-import { CriterionName } from '../molecules/CriterionName';
+import { CriterionItem } from '../molecules/CriterionItem';
 
 type RatingsFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
@@ -257,53 +257,43 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
 
   return (
     <>
-      <ul className='space-y-4'>
+      <ul className='max-h-60 space-y-4 overflow-y-auto'>
         {weights.map((weight, index) => (
-          <li key={weight.id} className='flex items-center justify-between gap-x-2'>
-            <div className='flex w-64 items-center justify-between gap-2'>
-              <CriterionName>
-                {criteria.find((c) => c.id === weight.criterionId)?.name}
-              </CriterionName>
-
-              <Button
-                type='button'
-                variant='destructive'
-                onClick={() => viewModel.actions.remove(index)}
-              >
-                <Trash2 />
-              </Button>
-            </div>
-
-            <div className='flex items-center space-x-3'>
-              <span>{weight.value.toFixed(WeightValue.MAX_FRACTION_DIGITS)}</span>
-
-              <FormField
-                control={form.control}
-                name={`${name}.${index}.value`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Slider
-                        name={field.name}
-                        ref={field.ref}
-                        onBlur={field.onBlur}
-                        value={[field.value]}
-                        min={WeightValue.MIN}
-                        max={WeightValue.MAX}
-                        step={stepBy(WeightValue.MAX_FRACTION_DIGITS)}
-                        onValueChange={([newValue]) =>
-                          viewModel.actions.changeValue(weight, newValue!)
-                        }
-                        onValueCommit={() => viewModel.actions.fixTotal()}
-                        disabled={weights.length === 1}
-                        className='w-64'
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-          </li>
+          <CriterionItem
+            key={weight.id}
+            name={criteria.find((c) => c.id === weight.criterionId)?.name}
+            onDelete={() => viewModel.actions.remove(index)}
+            value={weight.value.toFixed(WeightValue.MAX_FRACTION_DIGITS)}
+            components={{
+              Slider: (
+                <FormField
+                  control={form.control}
+                  name={`${name}.${index}.value`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Slider
+                          name={field.name}
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          value={[field.value]}
+                          min={WeightValue.MIN}
+                          max={WeightValue.MAX}
+                          step={stepBy(WeightValue.MAX_FRACTION_DIGITS)}
+                          onValueChange={([newValue]) =>
+                            viewModel.actions.changeValue(weight, newValue!)
+                          }
+                          onValueCommit={() => viewModel.actions.fixTotal()}
+                          disabled={weights.length === 1}
+                          className='w-32 min-[400px]:w-48 min-[475px]:w-64'
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              ),
+            }}
+          />
         ))}
       </ul>
 

@@ -26,7 +26,7 @@ import { type FormSchema } from '@/view/form.schema';
 
 import { CriteriaDropdownMenu } from '../molecules/CriteriaDropdownMenu';
 import { SlidersDialog } from '../sections/SlidersDialog';
-import { CriterionName } from '../molecules/CriterionName';
+import { CriterionItem } from '../molecules/CriterionItem';
 
 type AlternativesFormProps = Readonly<{
   form: UseFormReturn<FormSchema>;
@@ -177,40 +177,35 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
     <>
       <ul className='space-y-4'>
         {ratedCriteria.map((ratedCriterion, index) => (
-          <li key={ratedCriterion.id} className='flex items-center justify-between'>
-            <div className='flex w-64 items-center justify-between gap-2'>
-              <CriterionName>
-                {criteria.find((c) => c.id === ratedCriterion.criterionId)?.name}
-              </CriterionName>
-              <Button type='button' variant='destructive' onClick={() => remove(index)}>
-                <Trash2 />
-              </Button>
-            </div>
-
-            <div className='flex items-center space-x-3'>
-              <span>{ratedCriterion.value}</span>
-
-              <FormField
-                control={form.control}
-                name={`${name}.${index}.value`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Slider
-                        {...field}
-                        value={[field.value]}
-                        min={RatedCriterionValue.MIN}
-                        max={RatedCriterionValue.MAX}
-                        step={stepBy(RatedCriterionValue.MAX_FRACTION_DIGITS)}
-                        onValueChange={([newValue]) => field.onChange(newValue)}
-                        className='w-64'
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-          </li>
+          <CriterionItem
+            key={ratedCriterion.id}
+            name={criteria.find((c) => c.id === ratedCriterion.criterionId)?.name}
+            onDelete={() => remove(index)}
+            value={ratedCriterion.value}
+            components={{
+              Slider: (
+                <FormField
+                  control={form.control}
+                  name={`${name}.${index}.value`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Slider
+                          {...field}
+                          value={[field.value]}
+                          min={RatedCriterionValue.MIN}
+                          max={RatedCriterionValue.MAX}
+                          step={stepBy(RatedCriterionValue.MAX_FRACTION_DIGITS)}
+                          onValueChange={([newValue]) => field.onChange(newValue)}
+                          className='w-32 min-[400px]:w-48 min-[475px]:w-64'
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              ),
+            }}
+          />
         ))}
       </ul>
       <div className='mt-3.5 flex items-center justify-between'>

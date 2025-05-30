@@ -34,7 +34,7 @@ export function CreateAlternativeCategoryForm({ onSubmit }: Props) {
   });
 
   return (
-    <div className='mx-auto w-full max-w-4xl p-10'>
+    <div className='mx-auto w-full max-w-4xl p-5 md:p-10'>
       <H3 className='mb-4'>Create Alternative Category</H3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
@@ -42,7 +42,7 @@ export function CreateAlternativeCategoryForm({ onSubmit }: Props) {
             <Button variant='outline' asChild>
               <Link to='/'>
                 <ArrowLeft />
-                Back to Categories
+                <span className='max-[420px]:hidden'>Back to Categories</span>
               </Link>
             </Button>
 

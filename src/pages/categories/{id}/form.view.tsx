@@ -31,7 +31,7 @@ export function UpdateAlternativeCategoryForm({ onDelete, onSubmit, values }: Pr
   });
 
   return (
-    <div className='mx-auto w-full max-w-4xl p-10'>
+    <div className='mx-auto w-full max-w-4xl p-5 md:p-10'>
       <H3 className='mb-4'>Update Alternative Category</H3>
 
       <Form {...form}>
@@ -40,7 +40,7 @@ export function UpdateAlternativeCategoryForm({ onDelete, onSubmit, values }: Pr
             <Button variant='outline' asChild>
               <Link to='/'>
                 <ArrowLeft />
-                Back to Categories
+                <span className='max-[420px]:hidden'>Back to Categories</span>
               </Link>
             </Button>
 

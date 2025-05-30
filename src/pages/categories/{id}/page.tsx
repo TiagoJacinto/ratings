@@ -95,7 +95,7 @@ export function AlternativeCategoryPage() {
       modules.alternatives.controllers.updateAlternativeCategory.execute(rating),
     onError: () => toast.error('Error saving category'),
     onSuccess: async () => {
-      toast('Category saved successfully');
+      toast('Category updated successfully');
       await queryClient.invalidateQueries({
         queryKey: ['getAlternativeCategoryById'],
       });

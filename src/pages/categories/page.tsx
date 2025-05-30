@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Edit3, Plus } from 'lucide-react';
+import { ChevronDown, ChevronRight, Edit3, Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 import { Button } from '@/components/atoms/button';
 import { H4 } from '@/components/atoms/typography/h4';
@@ -26,16 +27,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/atoms/form';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/atoms/accordion';
 import { CategoryDeletionConfirmationDialog } from '@/components/sections/CategoryDeletionConfirmationDialog';
 import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category-by-id/delete-alternative-category-by-id..use-case';
 import { type ImportAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/import-alternative-category/import-alternative-category.use-case';
 import { Card, CardContent } from '@/components/atoms/card';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/atoms/collapsible';
 
 const ImportedCategorySchema = z.object({
   name: z.string().min(1, {
@@ -127,7 +127,7 @@ export function CategoriesPage() {
   });
 
   return (
-    <div className='mx-auto w-full max-w-4xl p-10'>
+    <div className='mx-auto w-full max-w-4xl p-5 md:p-10'>
       <div className='mb-5 flex items-center justify-between border-b pb-2'>
         <h3 className='scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
           Categories
@@ -140,7 +140,7 @@ export function CategoriesPage() {
             </DialogTrigger>
 
             <DialogContent scrollable>
-              <DialogHeader>
+              <DialogHeader className='text-left'>
                 <DialogTitle>Import category</DialogTitle>
               </DialogHeader>
 
@@ -211,7 +211,25 @@ type ImportCategoryFormProps = Readonly<{
   handleImport: (dto: ImportedCategory) => void;
 }>;
 
+const jsonFormat = `{
+  name: string;
+  alternatives?: {
+    name: string;
+    description?: string;
+    ratedCriteria?: { criterionName: string; value: number }[];
+  }[];
+  criteria?: { name: string; description?: string }[];
+  description?: string;
+  ratings?: {
+    name: string;
+    description?: string;
+    weights?: { criterionName: string; value: number }[];
+  }[];
+}`;
+
 function ImportCategoryForm({ handleImport }: ImportCategoryFormProps) {
+  const [showFormat, setShowFormat] = useState(false);
+
   const form = useForm<FormSchema>({
     defaultValues: {
       unparsedJsonCategoryImport: '',
@@ -240,7 +258,7 @@ function ImportCategoryForm({ handleImport }: ImportCategoryFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='w-120 space-y-4'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full min-w-0 space-y-4'>
         <FormField
           control={form.control}
           name='unparsedJsonCategoryImport'
@@ -248,38 +266,43 @@ function ImportCategoryForm({ handleImport }: ImportCategoryFormProps) {
             <FormItem>
               <FormLabel>Category JSON</FormLabel>
               <FormControl>
-                <Textarea {...field} className='h-64' />
+                <Textarea
+                  {...field}
+                  placeholder='Paste your category JSON here...'
+                  className='h-64 min-h-[200px] w-full font-mono text-sm'
+                />
               </FormControl>
               <FormMessage />
-              <Accordion type='single' collapsible className='mt-2'>
-                <AccordionItem value='example-json'>
-                  <AccordionTrigger className='text-sm underline'>
-                    Show JSON Format
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <pre className='overflow-x-auto rounded bg-neutral-100 p-2 text-xs select-all'>
-                      {`{
-  name: string;
-  alternatives?: {
-    name: string;
-    description?: string;
-    ratedCriteria?: { criterionName: string; value: number }[];
-  }[];
-  criteria?: { name: string; description?: string }[];
-  description?: string;
-  ratings?: {
-    name: string;
-    description?: string;
-    weights?: { criterionName: string; value: number }[];
-  }[];
-}`}
-                    </pre>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
             </FormItem>
           )}
         />
+
+        <Collapsible open={showFormat} onOpenChange={setShowFormat} className='space-y-2'>
+          <CollapsibleTrigger asChild>
+            <Button
+              type='button'
+              variant='ghost'
+              className='text-muted-foreground hover:text-foreground flex h-auto items-center gap-2 p-0 text-sm font-normal'
+            >
+              {showFormat ? (
+                <ChevronDown className='h-4 w-4' />
+              ) : (
+                <ChevronRight className='h-4 w-4' />
+              )}
+              JSON Format
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className='bg-muted/50 w-full min-w-0 overflow-hidden rounded-md border'>
+              <pre
+                className='w-full cursor-pointer overflow-x-auto overflow-y-hidden p-3 font-mono text-xs whitespace-pre select-all'
+                title='Click to select all'
+              >
+                {jsonFormat}
+              </pre>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <Button type='submit'>Import</Button>
       </form>
