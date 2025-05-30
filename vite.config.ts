@@ -20,7 +20,7 @@ export default defineConfig({
       includeAssets: ['**/*'],
       manifest: {
         name: 'Ratings',
-        background_color: '#2196f3',
+        background_color: '#fff',
         display: 'standalone',
         icons: [
           {
@@ -587,7 +587,7 @@ export default defineConfig({
         scope: '/',
         short_name: 'Ratings',
         start_url: '/',
-        theme_color: '#2196f3',
+        theme_color: '#fff',
       },
       workbox: {
         globPatterns: ['**/*'],
