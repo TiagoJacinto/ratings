@@ -15,9 +15,11 @@ export function CriteriaDropdownMenu({
   isCriteriaSelected,
   onAllCriteriaSelected,
   onCriteriaSelected,
+  text,
 }: Readonly<{
   criteria: FormSchema['criteria'];
   isAllCriteriaSelected: boolean;
+  text: string;
   onAllCriteriaSelected: () => void;
   onCriteriaSelected: (criterionId: number) => void;
   isCriteriaSelected: (criterionId: number) => boolean;
@@ -30,7 +32,7 @@ export function CriteriaDropdownMenu({
           variant='secondary'
           className='bg-gray-500 text-white hover:bg-gray-600'
         >
-          Add Rating
+          {text}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

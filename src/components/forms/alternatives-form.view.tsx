@@ -210,6 +210,7 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
       </ul>
       <div className='mt-3.5 flex items-center justify-between'>
         <CriteriaDropdownMenu
+          text='Add Rated Criterion'
           criteria={criteria}
           isAllCriteriaSelected={criteria.every((criterion) =>
             ratedCriteria.some((w) => w.criterionId === criterion.id),

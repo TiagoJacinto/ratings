@@ -299,6 +299,7 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
 
       <div className='mt-3.5 flex items-center justify-between'>
         <CriteriaDropdownMenu
+          text='Add Weight'
           criteria={criteria}
           isAllCriteriaSelected={criteria.every((criterion) =>
             weights.some((w) => w.criterionId === criterion.id),
