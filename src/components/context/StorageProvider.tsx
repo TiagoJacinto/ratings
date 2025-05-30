@@ -14,7 +14,6 @@ import { Query } from '../Query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../atoms/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../atoms/form';
 import { Button } from '../atoms/button';
-import { Checkbox } from '../atoms/checkbox';
 import { OpenFilePickerButton } from '../molecules/OpenFilePickerButton';
 
 type Props = Readonly<{
@@ -104,7 +103,6 @@ function ChooseSQLiteDatabase() {
 }
 
 const formSchema = z.object({
-  permissionToUseFileHandle: z.literal<boolean>(true),
   sqliteDbFileHandle: z.unknown().refine((value) => value instanceof FileSystemFileHandle, {
     message: 'Please choose a SQLite database',
   }),
@@ -121,22 +119,8 @@ function SQLiteConfigurationForm({ isSubmitting, onSubmit }: SQLiteConfiguration
   const { removeStorageType } = useStorageType();
 
   const form = useForm<FormSchema>({
-    defaultValues: {
-      permissionToUseFileHandle: false,
-    },
     resolver: zodResolver(formSchema),
   });
-
-  const requestPermissionToUseFile = async () => {
-    const formValues = form.getValues();
-
-    if (!formValues.sqliteDbFileHandle || form.getFieldState('sqliteDbFileHandle').invalid)
-      return false;
-
-    const permission = await formValues.sqliteDbFileHandle.requestPermission();
-
-    return permission === 'granted';
-  };
 
   return (
     <div className='flex min-h-screen justify-center bg-gray-50 p-4 pt-16'>
@@ -184,24 +168,6 @@ function SQLiteConfigurationForm({ isSubmitting, onSubmit }: SQLiteConfiguration
                         />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='permissionToUseFileHandle'
-                  render={({ field }) => (
-                    <FormItem className='mt-2 flex gap-x-2'>
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={async () =>
-                            field.onChange(await requestPermissionToUseFile())
-                          }
-                        />
-                      </FormControl>
-                      <FormLabel>I allow the use of this SQLite database file</FormLabel>
                     </FormItem>
                   )}
                 />
