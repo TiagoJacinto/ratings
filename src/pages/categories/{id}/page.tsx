@@ -7,6 +7,7 @@ import { useModules } from '@/components/context/ModulesProvider';
 import { Query } from '@/components/Query';
 import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category-by-id/delete-alternative-category-by-id..use-case';
 import { type UpdateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/update-alternative-category/update-alternative-category.use-case';
+import { type FormSchema } from '@/view/form.schema';
 
 import { UpdateAlternativeCategoryForm } from './form.view';
 
@@ -28,53 +29,39 @@ export function AlternativeCategoryPage() {
 
       const criteria =
         await modules.alternatives.repositories.criterion.findManyByAlternativeCategoryId(id);
-      const ratings = await modules.ratings.repositories.rating.findManyByAlternativeCategoryId(id);
+      const ratings =
+        await modules.ratings.repositories.rating.findManyByAlternativeCategoryIdForUpdate(id);
       const alternatives =
-        await modules.alternatives.repositories.alternative.findManyByAlternativeCategoryId(id);
+        await modules.alternatives.repositories.alternative.findManyByAlternativeCategoryIdForUpdate(
+          id,
+        );
 
       return {
         name: category.name,
-        alternatives: await Promise.all(
-          alternatives.map(async (alternative) => ({
-            id: alternative.id.toValue() as number,
-            name: alternative.name,
-            description: alternative.description,
-            ratedCriteria: (
-              await modules.alternatives.repositories.ratedCriterion.findManyByAlternativeId(
-                alternative.id.toValue() as number,
-                { criterion: true },
-              )
-            ).map((ratedCriterion) => ({
-              id: ratedCriterion.id.toValue() as number,
-              criterionId: ratedCriterion.criterion.id.toValue() as number,
-              value: ratedCriterion.value.value,
-            })),
+        alternatives: alternatives.map((alternative) => ({
+          ...alternative.toObject(),
+          id: alternative.id.toValue() as number,
+          ratedCriteria: alternative.ratedCriteria.map((ratedCriterion) => ({
+            id: ratedCriterion.id.toValue() as number,
+            criterionId: ratedCriterion.criterion.id.toValue() as number,
+            value: ratedCriterion.value.value,
           })),
-        ),
+        })),
         criteria: criteria.map((criterion) => ({
+          ...criterion.toObject(),
           id: criterion.id.toValue() as number,
-          name: criterion.name,
-          description: criterion.description,
         })),
         description: category.description,
-        ratings: await Promise.all(
-          ratings.map(async (rating) => ({
-            id: rating.id.toValue() as number,
-            name: rating.name,
-            description: rating.description,
-            weights: (
-              await modules.ratings.repositories.weight.findManyByRatingId(
-                rating.id.toValue() as number,
-                { criterion: true },
-              )
-            ).map((weight) => ({
-              id: weight.id.toValue() as number,
-              criterionId: weight.criterion.id.toValue() as number,
-              value: weight.value.value,
-            })),
+        ratings: ratings.map((rating) => ({
+          ...rating.toObject(),
+          id: rating.id.toValue() as number,
+          weights: rating.weights.map((weight) => ({
+            id: weight.id.toValue() as number,
+            criterionId: weight.criterion.id.toValue() as number,
+            value: weight.value.value,
           })),
-        ),
-      };
+        })),
+      } satisfies FormSchema;
     },
   });
 
@@ -108,7 +95,12 @@ export function AlternativeCategoryPage() {
         <UpdateAlternativeCategoryForm
           values={category}
           onDelete={() => deleteCategory({ id })}
-          onSubmit={(data) => mutate({ id, ...data })}
+          onSubmit={(data) =>
+            mutate({
+              id,
+              ...data,
+            })
+          }
         />
       )}
     </Query>

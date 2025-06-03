@@ -3,7 +3,6 @@ import { type DataSource, type Repository } from 'typeorm';
 import { AlternativeCategory as AlternativeCategoryModel } from '@/database/entities/AlternativeCategory';
 import { type AlternativeCategory } from '@/modules/alternatives/domain/AlternativeCategory';
 import { TypeORMAlternativeCategoryMapper } from '@/modules/alternatives/mappers/TypeORMAlternativeCategoryMapper';
-import { type EntityRelations, type EntityWithRelations } from '@/shared/model/CrudRepository';
 
 import { type AlternativeCategoryRepository } from '../alternative-category.repository';
 
@@ -13,23 +12,14 @@ export class TypeORMAlternativeCategoryRepository implements AlternativeCategory
     this.alternativeCategory = orm.getRepository(AlternativeCategoryModel);
   }
 
-  async findById<TRelations extends EntityRelations<'alternatives' | 'criteria' | 'ratings'>>(
-    id: number,
-    relations?: TRelations,
-  ) {
-    const alternativeCategory = await this.alternativeCategory.findOne({
-      relations,
-      where: {
-        id,
-      },
+  async findById(id: number) {
+    const alternativeCategory = await this.alternativeCategory.findOneBy({
+      id,
     });
 
     if (!alternativeCategory) return null;
 
-    return TypeORMAlternativeCategoryMapper.toDomain(alternativeCategory) as EntityWithRelations<
-      AlternativeCategory,
-      TRelations
-    >;
+    return TypeORMAlternativeCategoryMapper.toDomain(alternativeCategory);
   }
 
   existsByName(name: string) {

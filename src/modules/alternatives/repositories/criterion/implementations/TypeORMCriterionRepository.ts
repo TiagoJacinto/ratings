@@ -3,7 +3,6 @@ import { type DataSource, type Repository } from 'typeorm';
 import { Criterion as CriterionModel } from '@/database/entities/Criterion';
 import { type Criterion } from '@/modules/alternatives/domain/Criterion';
 import { TypeORMCriterionMapper } from '@/modules/alternatives/mappers/TypeORMCriterionMapper';
-import { type EntityWithRelations } from '@/shared/model/CrudRepository';
 
 import { type CriterionRepository } from '../criterion.repository';
 
@@ -13,20 +12,14 @@ export class TypeORMCriterionRepository implements CriterionRepository {
     this.criterion = orm.getRepository(CriterionModel);
   }
 
-  async findById<TRelations extends Partial<Record<'alternativeCategory', boolean>>>(
-    id: number,
-    relations?: TRelations,
-  ) {
-    const criterion = await this.criterion.findOne({
-      relations,
-      where: {
-        id,
-      },
+  async findById(id: number) {
+    const criterion = await this.criterion.findOneBy({
+      id,
     });
 
     if (!criterion) return null;
 
-    return TypeORMCriterionMapper.toDomain(criterion) as EntityWithRelations<Criterion, TRelations>;
+    return TypeORMCriterionMapper.toDomain(criterion);
   }
 
   async findManyByAlternativeCategoryId(id: number) {

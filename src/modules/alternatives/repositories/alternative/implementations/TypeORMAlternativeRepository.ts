@@ -1,9 +1,9 @@
 import { type DataSource, type Repository } from 'typeorm';
+import { type SetNonNullableDeep } from 'type-fest';
 
 import { Alternative as AlternativeModel } from '@/database/entities/Alternative';
 import { type Alternative } from '@/modules/alternatives/domain/Alternative';
 import { TypeORMAlternativeMapper } from '@/modules/alternatives/mappers/TypeORMAlternativeMapper';
-import { type EntityWithRelations } from '@/shared/model/CrudRepository';
 
 import { type AlternativeRepository } from '../alternative.repository';
 
@@ -13,28 +13,12 @@ export class TypeORMAlternativeRepository implements AlternativeRepository {
     this.alternativeCategory = orm.getRepository(AlternativeModel);
   }
 
-  async findById<
-    TRelations extends Partial<Record<'ratedCriteria' | 'alternativeCategory', boolean>>,
-  >(id: number, relations?: TRelations) {
-    const alternativeCategory = await this.alternativeCategory.findOne({
-      relations,
-      where: {
-        id,
-      },
-    });
-
-    if (!alternativeCategory) return null;
-
-    return TypeORMAlternativeMapper.toDomain(alternativeCategory) as EntityWithRelations<
-      Alternative,
-      TRelations
-    >;
-  }
-
-  async findManyByAlternativeCategoryId(id: number) {
+  async findManyByAlternativeCategoryIdForUpdate(id: number) {
     const models = await this.alternativeCategory.find({
       relations: {
-        alternativeCategory: true,
+        ratedCriteria: {
+          criterion: true,
+        },
       },
       where: {
         alternativeCategory: {
@@ -42,7 +26,18 @@ export class TypeORMAlternativeRepository implements AlternativeRepository {
         },
       },
     });
-    return models.map(TypeORMAlternativeMapper.toDomain);
+    return models.map(TypeORMAlternativeMapper.toDomain) as SetNonNullableDeep<
+      Alternative,
+      'ratedCriteria' | `ratedCriteria.${number}.criterion`
+    >[];
+  }
+
+  async findById(id: number) {
+    const alternativeCategory = await this.alternativeCategory.findOneBy({
+      id,
+    });
+    if (!alternativeCategory) return null;
+    return TypeORMAlternativeMapper.toDomain(alternativeCategory);
   }
 
   async findAll() {

@@ -16,4 +16,11 @@ export abstract class Entity<T> {
 
     return this._id.equals(entity._id);
   }
+
+  public toObject() {
+    return {
+      id: this._id,
+      ...this.props,
+    };
+  }
 }
