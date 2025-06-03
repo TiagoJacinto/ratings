@@ -183,7 +183,7 @@ type RatingViewProps = Readonly<{
 
 const weightCriteria = (ratedCriteria: RatedCriterion[], weights: Weight[]): number =>
   ratedCriteria.reduce((acc, ratedCriterion) => {
-    const weight = weights.find((w) => w.criterionId === ratedCriterion.criterionId)?.value;
+    const weight = weights.find((w) => w.criterion.id === ratedCriterion.criterion.id)?.value;
 
     if (!weight) return acc;
 
@@ -221,10 +221,7 @@ function RatingsTable({ form }: RatingViewProps) {
           }),
           {},
         ),
-        ...a.ratedCriteria.reduce(
-          (acc, r) => ({ ...acc, [criteria.find((c) => c.id === r.criterionId)!.name]: r.value }),
-          {},
-        ),
+        ...a.ratedCriteria.reduce((acc, r) => ({ ...acc, [r.criterion.name]: r.value }), {}),
       }))}
       pagination={{
         size: 'sm',
@@ -261,7 +258,7 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
         {weights.map((weight, index) => (
           <CriterionItem
             key={weight.id}
-            name={criteria.find((c) => c.id === weight.criterionId)?.name}
+            name={weight.criterion.name}
             onDelete={() => viewModel.actions.remove(index)}
             value={weight.value}
             maxFractionDigits={WeightValue.MAX_FRACTION_DIGITS}
@@ -302,26 +299,24 @@ function WeightsForm({ form, ratingIndex }: WeightsFormProps) {
         <CriteriaDropdownMenu
           text='Add Weight'
           criteria={criteria}
-          isAllCriteriaSelected={criteria.every((criterion) =>
-            weights.some((w) => w.criterionId === criterion.id),
-          )}
-          isCriteriaSelected={(criterionId) => weights.some((w) => w.criterionId === criterionId)}
+          isAllCriteriaSelected={criteria.length === weights.length}
+          isCriteriaSelected={(criterion) => weights.some((w) => w.criterion.id === criterion.id)}
           onAllCriteriaSelected={() =>
             setWeights([
               ...weights,
               ...criteria
-                .filter((criterion) => !weights.some((w) => w.criterionId === criterion.id))
+                .filter((criterion) => !weights.some((w) => w.criterion.id === criterion.id))
                 .map((criterion) => ({
                   id: getNextTempId(),
-                  criterionId: criterion.id,
+                  criterion,
                   value: 0,
                 })),
             ])
           }
-          onCriteriaSelected={(criterionId) =>
+          onCriteriaSelected={(criterion) =>
             viewModel.actions.addNew({
               id: getNextTempId(),
-              criterionId,
+              criterion,
               value: weights.length === 0 ? WeightValue.MAX : WeightValue.MIN,
             })
           }

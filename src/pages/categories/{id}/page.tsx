@@ -43,13 +43,17 @@ export function AlternativeCategoryPage() {
           id: alternative.id.toValue() as number,
           ratedCriteria: alternative.ratedCriteria.map((ratedCriterion) => ({
             id: ratedCriterion.id.toValue() as number,
-            criterionId: ratedCriterion.criterion.id.toValue() as number,
+            criterion: {
+              ...ratedCriterion.criterion.toObject(),
+              id: ratedCriterion.criterion.id.toValue() as number,
+            },
             value: ratedCriterion.value.value,
           })),
         })),
         criteria: criteria.map((criterion) => ({
-          ...criterion.toObject(),
           id: criterion.id.toValue() as number,
+          name: criterion.name,
+          description: criterion.description,
         })),
         description: category.description,
         ratings: ratings.map((rating) => ({
@@ -57,7 +61,10 @@ export function AlternativeCategoryPage() {
           id: rating.id.toValue() as number,
           weights: rating.weights.map((weight) => ({
             id: weight.id.toValue() as number,
-            criterionId: weight.criterion.id.toValue() as number,
+            criterion: {
+              ...weight.criterion.toObject(),
+              id: weight.criterion.id.toValue() as number,
+            },
             value: weight.value.value,
           })),
         })),
@@ -99,6 +106,22 @@ export function AlternativeCategoryPage() {
             mutate({
               id,
               ...data,
+              alternatives: data.alternatives.map((alternative) => ({
+                ...alternative,
+                ratedCriteria: alternative.ratedCriteria.map((rc) => ({
+                  id: rc.id,
+                  criterionId: rc.criterion.id,
+                  value: rc.value,
+                })),
+              })),
+              ratings: data.ratings.map((rating) => ({
+                ...rating,
+                weights: rating.weights.map((w) => ({
+                  id: w.id,
+                  criterionId: w.criterion.id,
+                  value: w.value,
+                })),
+              })),
             })
           }
         />

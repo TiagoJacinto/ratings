@@ -179,7 +179,7 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
         {ratedCriteria.map((ratedCriterion, index) => (
           <CriterionItem
             key={ratedCriterion.id}
-            name={criteria.find((c) => c.id === ratedCriterion.criterionId)?.name}
+            name={ratedCriterion.criterion.name}
             onDelete={() => remove(index)}
             value={ratedCriterion.value}
             maxFractionDigits={RatedCriterionValue.MAX_FRACTION_DIGITS}
@@ -213,28 +213,26 @@ function RatedCriteriaForm({ alternativeIndex, form }: RatedCriteriaFormProps) {
         <CriteriaDropdownMenu
           text='Add Rated Criterion'
           criteria={criteria}
-          isAllCriteriaSelected={criteria.every((criterion) =>
-            ratedCriteria.some((w) => w.criterionId === criterion.id),
-          )}
-          isCriteriaSelected={(criterionId) =>
-            ratedCriteria.some((w) => w.criterionId === criterionId)
+          isAllCriteriaSelected={criteria.length === ratedCriteria.length}
+          isCriteriaSelected={(criterion) =>
+            ratedCriteria.some((w) => w.criterion.id === criterion.id)
           }
           onAllCriteriaSelected={() => {
             setRatedCriteria([
               ...ratedCriteria,
               ...criteria
-                .filter((criterion) => !ratedCriteria.some((w) => w.criterionId === criterion.id))
+                .filter((criterion) => !ratedCriteria.some((w) => w.criterion.id === criterion.id))
                 .map((criterion) => ({
                   id: getNextTempId(),
-                  criterionId: criterion.id,
+                  criterion,
                   value: 0,
                 })),
             ]);
           }}
-          onCriteriaSelected={(criterionId) => {
+          onCriteriaSelected={(criterion) => {
             append({
               id: getNextTempId(),
-              criterionId,
+              criterion,
               value: 0,
             });
           }}

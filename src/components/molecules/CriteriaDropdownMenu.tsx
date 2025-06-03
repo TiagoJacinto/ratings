@@ -1,4 +1,5 @@
 import { type FormSchema } from '@/view/form.schema';
+import { type Criterion } from '@/view/domain/Criterion';
 
 import {
   DropdownMenu,
@@ -21,8 +22,8 @@ export function CriteriaDropdownMenu({
   isAllCriteriaSelected: boolean;
   text: string;
   onAllCriteriaSelected: () => void;
-  onCriteriaSelected: (criterionId: number) => void;
-  isCriteriaSelected: (criterionId: number) => boolean;
+  onCriteriaSelected: (criterion: Criterion) => void;
+  isCriteriaSelected: (criterion: Criterion) => boolean;
 }>) {
   return (
     <DropdownMenu>
@@ -50,8 +51,8 @@ export function CriteriaDropdownMenu({
             {criteria.map((criterion) => (
               <DropdownMenuItem
                 key={criterion.id}
-                onClick={() => onCriteriaSelected(criterion.id)}
-                disabled={isCriteriaSelected(criterion.id)}
+                onClick={() => onCriteriaSelected(criterion)}
+                disabled={isCriteriaSelected(criterion)}
               >
                 {criterion.name}
               </DropdownMenuItem>
