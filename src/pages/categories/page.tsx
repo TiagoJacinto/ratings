@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, ChevronRight, Edit3, Plus } from 'lucide-react';
+import { ChevronDown, ChevronRight, Edit3, Plus, Settings } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -134,6 +134,13 @@ export function CategoriesPage() {
         </h3>
 
         <div className='flex items-center gap-2'>
+          <Button type='button' variant='outline' asChild>
+            <Link to='preferences'>
+              <Settings />
+              <span className='max-[460px]:hidden'>Preferences</span>
+            </Link>
+          </Button>
+
           <Dialog>
             <DialogTrigger asChild>
               <Button>Import</Button>

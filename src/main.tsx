@@ -13,8 +13,8 @@ import { AppLayout } from './components/layouts/AppLayout';
 import { CreateAlternativeCategoryPage } from './pages/categories/new/page';
 import { AlternativeCategoryPage } from './pages/categories/{id}/page';
 import { CategoriesPage } from './pages/categories/page';
+import { PreferencesPage } from './pages/categories/preferences/page';
 
-// add this to prompt for a refresh
 const updateSW = registerSW({
   onNeedRefresh() {
     if (confirm('New content available. Reload?')) {
@@ -34,6 +34,7 @@ createRoot(document.getElementById('root')!).render(
             <Route index element={<CategoriesPage />} />
             <Route path='new' element={<CreateAlternativeCategoryPage />} />
             <Route path=':id' element={<AlternativeCategoryPage />} />
+            <Route path='preferences' element={<PreferencesPage />} />
           </Route>
         </Route>
       </Routes>

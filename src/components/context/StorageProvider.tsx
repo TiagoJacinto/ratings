@@ -23,11 +23,7 @@ type Props = Readonly<{
   removeStorageType: () => void;
 }>;
 
-type StorageTypeContext = {
-  storageType: StorageType;
-  setStorageType: (storageType: StorageType) => void;
-  removeStorageType: () => void;
-};
+type StorageTypeContext = [StorageType, (storageType: StorageType) => void, () => void];
 
 const StorageTypeContext = React.createContext<StorageTypeContext>({} as StorageTypeContext);
 
@@ -38,19 +34,11 @@ export function StorageTypeProvider({
   storageType,
 }: Props) {
   return (
-    <StorageTypeContext.Provider
-      value={{
-        removeStorageType,
-        setStorageType,
-        storageType,
-      }}
-    >
+    <StorageTypeContext.Provider value={[storageType, setStorageType, removeStorageType]}>
       {children}
     </StorageTypeContext.Provider>
   );
 }
-
-const useStorageType = () => useContext(StorageTypeContext);
 
 export function StorageProvider({ children, storageType, ...props }: Props) {
   return (
@@ -62,6 +50,8 @@ export function StorageProvider({ children, storageType, ...props }: Props) {
     </StorageTypeProvider>
   );
 }
+
+export const useStorageType = () => useContext(StorageTypeContext);
 
 function WithSQLiteDatabase({
   children,
@@ -116,7 +106,7 @@ type SQLiteConfigurationFormProps = Readonly<{
 }>;
 
 function SQLiteConfigurationForm({ isSubmitting, onSubmit }: SQLiteConfigurationFormProps) {
-  const { removeStorageType } = useStorageType();
+  const [, , removeStorageType] = useStorageType();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),

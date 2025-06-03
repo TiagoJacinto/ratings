@@ -1,6 +1,6 @@
 import initSqlJs from 'sql.js';
 import wasm from 'sql.js/dist/sql-wasm.wasm?url';
-import { DataSource } from 'typeorm';
+import { type DataSourceOptions, DataSource } from 'typeorm';
 import 'localforage';
 import localforage from 'localforage';
 
@@ -11,22 +11,23 @@ import { Alternative } from './entities/Alternative';
 import { Criterion } from './entities/Criterion';
 import { RatedCriterion } from './entities/RatedCriterion';
 
-export async function loadDb(dbFileHandle?: FileSystemFileHandle) {
-  const SQL = await initSqlJs({ locateFile: () => wasm });
+export const SQL = await initSqlJs({ locateFile: () => wasm });
 
+export async function loadDb(dbFileHandle?: FileSystemFileHandle) {
   if (!dbFileHandle) window.localforage = localforage;
+
+  const options: DataSourceOptions = {
+    autoSave: true,
+    driver: SQL,
+    entities: [Alternative, AlternativeCategory, Criterion, RatedCriterion, Rating, Weight],
+    synchronize: true,
+    type: 'sqljs',
+  };
 
   const dataSource = dbFileHandle
     ? new DataSource({
-        autoSave: true,
+        ...options,
         database: new Uint8Array(await (await dbFileHandle.getFile()).arrayBuffer()),
-        driver: SQL,
-        entities: [Alternative, AlternativeCategory, Criterion, RatedCriterion, Rating, Weight],
-        location: dbFileHandle ? undefined : 'db',
-        logging: false,
-        subscribers: [],
-        synchronize: true,
-        type: 'sqljs',
         autoSaveCallback: async () => {
           const hasPermission = (await dbFileHandle.requestPermission()) === 'granted';
           if (!hasPermission) return;
@@ -39,14 +40,8 @@ export async function loadDb(dbFileHandle?: FileSystemFileHandle) {
         },
       })
     : new DataSource({
-        autoSave: true,
-        driver: SQL,
-        entities: [Alternative, AlternativeCategory, Criterion, RatedCriterion, Rating, Weight],
+        ...options,
         location: 'db',
-        logging: false,
-        subscribers: [],
-        synchronize: true,
-        type: 'sqljs',
         useLocalForage: true,
       });
 
