@@ -4,7 +4,6 @@ import { UniqueEntityID } from '@/shared/domain/UniqueEntityId';
 import { Rating } from '@/modules/ratings/domain/Rating';
 import { Weight } from '@/modules/ratings/domain/Weight';
 import { WeightValue } from '@/modules/ratings/domain/WeightValue';
-import { isTemporaryId } from '@/modules/shared/lib/isTemporaryId';
 
 import { type AlternativeCategoryRepository } from '../../repositories/alternative-category/alternative-category.repository';
 import { type CriterionRepository } from '../../repositories/criterion/criterion.repository';
@@ -71,7 +70,7 @@ export class UpdateAlternativeCategoryUseCase
             name: c.name,
             description: c.description,
           },
-          new UniqueEntityID(isTemporaryId(c.id) ? undefined : c.id),
+          new UniqueEntityID(c.id),
         ),
       );
 

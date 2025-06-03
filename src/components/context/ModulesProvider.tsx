@@ -70,6 +70,7 @@ export function ModulesProvider({ children }: Props) {
   const useCases = {
     createAlternativeCategory: new CreateAlternativeCategoryUseCase(
       repositories.alternativeCategory,
+      repositories.criterion,
     ),
     deleteAlternativeCategory: new DeleteAlternativeCategoryByIdUseCase(
       repositories.alternativeCategory,

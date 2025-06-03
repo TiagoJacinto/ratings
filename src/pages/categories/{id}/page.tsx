@@ -8,6 +8,7 @@ import { Query } from '@/components/Query';
 import { type DeleteAlternativeCategoryByIdDTO } from '@/modules/alternatives/use-cases/delete-alternative-category-by-id/delete-alternative-category-by-id..use-case';
 import { type UpdateAlternativeCategoryDTO } from '@/modules/alternatives/use-cases/update-alternative-category/update-alternative-category.use-case';
 import { type FormSchema } from '@/view/form.schema';
+import { AlternativeCategoryMapper } from '@/view/mappers/AlternativeCategoryMapper';
 
 import { UpdateAlternativeCategoryForm } from './form.view';
 
@@ -105,23 +106,7 @@ export function AlternativeCategoryPage() {
           onSubmit={(data) =>
             mutate({
               id,
-              ...data,
-              alternatives: data.alternatives.map((alternative) => ({
-                ...alternative,
-                ratedCriteria: alternative.ratedCriteria.map((rc) => ({
-                  id: rc.id,
-                  criterionId: rc.criterion.id,
-                  value: rc.value,
-                })),
-              })),
-              ratings: data.ratings.map((rating) => ({
-                ...rating,
-                weights: rating.weights.map((w) => ({
-                  id: w.id,
-                  criterionId: w.criterion.id,
-                  value: w.value,
-                })),
-              })),
+              ...AlternativeCategoryMapper.toDTO(data),
             })
           }
         />
